@@ -1,0 +1,176 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project: [Your Project Name Here - e.g., "PackUp"]
+
+## 1. Core Philosophy & Project Standards
+- **Primary Goal:** Build a high-performance, scalable, and maintainable web application with an exceptional user experience, particularly regarding speed and responsiveness.
+- **Language:** TypeScript is mandatory for all new code. Enforce strict type safety and leverage TypeScript's features to catch errors early.
+- **Framework:** Next.js (App Router is the default and preferred).
+- **Styling:** Tailwind CSS for utility-first styling.
+- **UI Components:** Shadcn/ui as the primary component library.
+- **State Management:** Zustand for global state, with persistence.
+- **AI Integration:** Vercel AI SDK for chat functionalities.
+- **Code Formatting:** Strict adherence to Prettier and ESLint configurations (`prettier.config.js`, `.eslintrc.js`). The AI must generate code that passes these linters.
+- **Imports:**
+    - Use absolute imports via `tsconfig.json` `paths` (e.g., `@/components/...`, `@/lib/...`, `@/features/...`).
+    - Order: React, Next.js, external libraries, project absolute imports (`@/features`, `@/components`, `@/lib`, etc.), then relative imports.
+
+## 2. File & Directory Structure
+- **Root Level:** Standard Next.js directories (`app`, `public`, `src` (optional, but if used, place `app`, `components`, `lib`, etc., inside `src`)). `components`, `lib`, `features`, `store`, `hooks`, `config`, `styles` (for `globals.css`), `types`.
+- **`app/` (App Router):**
+    - Group routes by feature or domain where logical.
+    - Route groups `(groupName)` can be used for organization without affecting URL paths (e.g., `app/(marketing)/about/page.tsx`).
+    - Co-locate components specific to a route within that route's folder if they are not reusable elsewhere (e.g., `app/dashboard/_components/Header.tsx`). Prefix with an underscore if they are private to that route segment.
+- **`components/`:**
+    - `ui/`: For global, reusable UI components, potentially extensions or compositions of Shadcn components (e.g., `components/ui/CustomButton.tsx`).
+    - `layout/`: For major layout components like `Navbar`, `Sidebar`, `Footer`.
+    - `common/`: For general-purpose components used across multiple features.
+- **`features/`:**
+    - Organize code by feature or domain (e.g., `features/chat/`, `features/user-profile/`).
+    - Each feature directory can contain its own `components/`, `hooks/`, `services/`, `utils/`, `types.ts` specific to that feature.
+    - This promotes modularity and makes it easier to scale.
+- **`lib/`:** For utility functions, helper functions, third-party library configurations, constants (e.g., `lib/utils.ts`, `lib/dates.ts`, `lib/constants.ts`).
+- **`store/`:** Zustand store definitions (e.g., `store/userStore.ts`, `store/chatStore.ts`).
+- **`hooks/`:** Global custom React hooks (e.g., `hooks/use-window-size.ts`). Feature-specific hooks go into `features/[featureName]/hooks/`.
+- **`types/`:** Global TypeScript type definitions or interfaces that are shared across multiple features/modules (e.g., `types/api.ts`). Feature-specific types should live within their feature directory.
+- **File Naming Conventions:**
+    - Components: `PascalCase.tsx` (e.g., `UserProfileCard.tsx`)
+    - Pages/Routes (App Router): `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `template.tsx`. Route folders: `kebab-case`.
+    - Hooks: `useKebabCase.ts` (e.g., `use-user-session.ts`)
+    - Utilities/Services: `kebab-case.ts` (e.g., `auth-service.ts`, `format-date.ts`)
+    - API route handlers: `route.ts` within `app/api/...`
+
+## 3. Code Documentation & Readability
+- **JSDoc for Functions & Components:**
+    - All public functions, hooks, and React components (including their props) must have JSDoc comments.
+    - Describe the purpose, parameters (`@param`), and return values (`@returns`).
+    - For components, describe props and their purpose.
+    - Example:
+      ```typescript
+      /**
+       * Renders a user's profile card.
+       * @param {object} props - The component's props.
+       * @param {string} props.userId - The ID of the user to display.
+       * @returns {JSX.Element} The user profile card component.
+       */
+      const UserProfileCard = ({ userId }: { userId: string }): JSX.Element => { /* ... */ };
+      ```
+- **Inline Comments for Complex Logic:** Use inline comments to explain complex or non-obvious sections of code. Focus on *why* something is done, not just *what* is done.
+- **Clarity Over Brevity:** Write clear, self-explanatory code. Variable and function names should be descriptive.
+- **TODOs:** Use `// TODO:` or `// FIXME:` comments with a brief explanation for work that needs to be done or issues to be addressed. Consider adding a JIRA ticket ID if applicable.
+
+## 4. Performance & Optimization (Critical Focus)
+- **Next.js App Router Best Practices:**
+    - **Server Components by Default:** Maximize usage of React Server Components (RSCs) for data fetching and rendering static content. This reduces client-side JavaScript.
+    - **Client Components (`"use client"`):** Use sparingly, only for interactivity, browser APIs, or hooks like `useState`, `useEffect`. Keep them small and push state down.
+    - **Streaming:** Leverage Next.js streaming capabilities with Suspense for better perceived performance on initial load. The AI should suggest using `<Suspense>` boundaries for components that fetch data.
+    - **`next/image`:** Mandatory for all images. Use it for automatic optimization (resizing, WebP format), lazy loading. Provide `width` and `height` props to prevent layout shifts.
+    - **`next/font`:** Use for optimizing web fonts, reducing layout shifts, and improving privacy.
+    - **Dynamic Imports (`next/dynamic`):**
+        - Use for components or libraries that are not needed on initial page load (e.g., modals, heavy charting libraries, components below the fold).
+        - Especially consider for client components to reduce the initial client bundle size.
+        - Example: `const HeavyComponent = dynamic(() => import('@/components/heavy-component'))`
+    - **Route Handlers (API Routes):** Keep them lean. Offload long-running tasks if necessary (e.g., to serverless functions or background jobs, though this might be out of scope for AI generation assistance initially).
+- **Bundle Size Reduction:**
+    - Be mindful of third-party library sizes. Prefer smaller, modular alternatives if available.
+    - Tree-shaking: Ensure code is written in a way that allows for effective tree-shaking.
+- **Memoization:**
+    - Use `React.memo` for components that re-render unnecessarily with the same props.
+    - Use `useMemo` and `useCallback` for expensive computations or to preserve referential equality for props passed to memoized child components. The AI should suggest these when appropriate but not overuse them.
+- **Minimize Re-renders:** Structure components and state to avoid unnecessary re-renders.
+- **Code Splitting:** Next.js handles this well by default (per page), but dynamic imports further enhance it.
+- **Data Fetching:**
+    - Fetch data as close as possible to where it's used, preferably in Server Components.
+    - Avoid waterfalls: Fetch data in parallel when possible.
+    - For client-side data dependent on user interaction, fetch efficiently (e.g., no redundant calls).
+
+## 5. Managing Side Effects
+- **Pure Functions:** Strive to write pure functions wherever possible, especially for utility functions and business logic. Pure functions given the same input always return the same output and have no side effects.
+- **`useEffect` Hook:**
+    - Use `useEffect` in Client Components for side effects like data fetching, subscriptions, or manually changing the DOM.
+    - Always include a dependency array.
+    - Ensure cleanup functions are provided for subscriptions or event listeners to prevent memory leaks.
+- **Isolating Side Effects:** Confine side effects to specific parts of the application (e.g., API route handlers, specific hooks, event handlers).
+- **Zustand Actions:** Side effects related to state changes (like API calls that update the store) should ideally be handled within or initiated by Zustand actions, keeping components cleaner.
+
+## 6. TypeScript Specifics
+- **Strict Mode:** Enforce all strict mode flags (`strict: true` in `tsconfig.json`).
+- **Avoid `any`:** Use `unknown` for values with truly unknown types and perform runtime type checking. Define specific types and interfaces for all data structures.
+- **Utility Types:** Actively use `Partial`, `Required`, `Pick`, `Omit`, `Readonly`, etc.
+- **Enums:** Use string enums for better readability and debugging, or `as const` for object literals to create union types.
+- **Function Overloads:** Consider for functions that can accept different argument types and have different return types based on input.
+
+## 7. Next.js (App Router) - Extended Best Practices
+- **Route Handlers (API):**
+    - Implement robust error handling and consistent response formats (e.g., `{ data: ... }` or `{ error: ... }`).
+    - Use `NextResponse.json()` for responses.
+    - Validate incoming data.
+- **Metadata API:** Use `generateMetadata` for dynamic metadata and `metadata` export for static metadata in layouts and pages.
+- **Error Handling:** Implement `error.tsx` and `global-error.tsx` for graceful error recovery and user feedback.
+- **Loading UI:** Use `loading.tsx` for immediate feedback during route transitions.
+- **Server Actions:**
+    - Prefer Server Actions for mutations (form submissions, data updates) directly from Server or Client Components, reducing the need for manual API route creation for these cases.
+    - Ensure proper error handling and progressive enhancement if JavaScript is disabled.
+    - Use `useFormState` and `useFormStatus` for managing form state and pending status in Client Components when using Server Actions.
+
+## 8. Tailwind CSS
+- **Consistency:** Use values from `tailwind.config.js` (theme colors, spacing, fonts) consistently.
+- **Readability:** For very long strings of utilities, consider creating semantic class names using `@apply` in `globals.css` *only* for highly reusable, complex patterns, or break down components. Generally, prefer direct utility application.
+- **Responsive Design:** Use Tailwind's responsive prefixes (`sm:`, `md:`, `lg:`) effectively.
+- **Dark Mode:** Implement dark mode using the `dark:` variant if planned.
+
+## 9. Shadcn/ui
+- **Composition over Customization:** Favor composing existing Shadcn components.
+- **Theming:** Customize via CSS variables in `globals.css` as per Shadcn documentation.
+- **Accessibility (a11y):** Maintain and verify accessibility when composing or extending Shadcn components.
+
+## 10. Zustand (State Management)
+- **Store Granularity:** Create multiple, focused stores rather than one monolithic store (e.g., `useUserStore`, `useSettingsStore`, `useChatSessionStore`).
+- **Actions for Mutations:** All state modifications must go through actions.
+- **Selectors for Derived State & Performance:** Use selectors for reading state to optimize re-renders (components only re-render if the selected part of the state changes).
+- **Persistence (`zustand/middleware/persist`):**
+    - Selectively persist only necessary state (e.g., user preferences, active chat session ID).
+    - Be cautious about storing large objects or sensitive data in `localStorage`.
+    - Handle hydration carefully, especially with Next.js SSR. Consider using a pattern to ensure client-only rendering for components that immediately depend on persisted state that might cause hydration mismatch.
+    - Example for preventing hydration mismatch for a persisted theme:
+      ```typescript
+      // In your component
+      const [isClient, setIsClient] = useState(false);
+      useEffect(() => { setIsClient(true); }, []);
+      const theme = useUserStore((state) => state.theme);
+      // ... then in JSX, conditionally render or apply theme:
+      // {isClient ? (current theme is: {theme}) : (default theme)}
+      ```
+
+## 11. Vercel AI SDK Integration (for Chat)
+- **Core Hooks:** Utilize `useChat` and `useCompletion` as the primary interfaces.
+- **API Route:**
+    - The AI should know how to structure the API route handler (e.g., `app/api/chat/route.ts`) that the Vercel AI SDK hooks will call.
+    - This route will interact with your chosen LLM (e.g., OpenAI, Anthropic).
+- **Streaming Responses:** Emphasize streaming for chat responses for better UX. The SDK handles this well, but generated code should support it.
+- **Message History:** The AI should correctly handle passing message history to the `useChat` hook and the backend API.
+- **UI Components for Chat:**
+    - When generating UI for chat, suggest using Shadcn components for input fields, buttons, message bubbles, etc.
+    - Ensure accessibility of chat interfaces (e.g., proper ARIA attributes).
+- **Error Handling:** Implement error handling for API calls made by the SDK (e.g., displaying an error message to the user if the LLM call fails).
+- **Context Management:** If chat needs to be aware of other application context (e.g., current document user is viewing), the rules should guide how this context is passed to the AI backend.
+- **Function Calling (if applicable):** If using LLM function calling features, the AI should be aware of how to structure those requests and handle responses through the Vercel AI SDK.
+
+## 12. Things to Absolutely Avoid
+- **Ignoring TypeScript errors (`@ts-ignore`, `any` without justification).**
+- **Direct DOM manipulation (unless in very specific, controlled scenarios via refs).**
+- **Large Client Components doing heavy computation or data fetching that could be done on the server.**
+- **Prop drilling for state that is clearly global or shared across many distant components (use Zustand).**
+- **Unnecessary side effects in rendering logic or pure functions.**
+- **Blocking the main thread with long-running JavaScript operations.**
+- **Not providing `key` props for lists of components.**
+- **Fetching the same data multiple times unnecessarily.**
+- **Introducing memory leaks (e.g., forgetting to clean up event listeners or subscriptions in `useEffect`).**
+- **Writing code that is difficult to understand or maintain due to lack of comments or poor structure.**
+- **Compromising on accessibility.**
+- **Not optimizing images or fonts.**
+
+
