@@ -11,7 +11,7 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-export default [
+export default async () => [
   js.configs.recommended,
 
   ...compat.extends(
@@ -46,7 +46,7 @@ export default [
 
   {
     plugins: {
-      prettier: require('eslint-plugin-prettier'),
+      prettier: (await import('eslint-plugin-prettier')).default,
     },
   },
 
