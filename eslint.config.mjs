@@ -11,7 +11,7 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-export default async () => [
+export default [
   js.configs.recommended,
 
   ...compat.extends(
@@ -41,12 +41,6 @@ export default async () => [
       'react/jsx-curly-brace-presence': ['warn', 'never'],
       'react/self-closing-comp': 'warn',
       'react/jsx-boolean-value': ['warn', 'never'],
-    },
-  },
-
-  {
-    plugins: {
-      prettier: (await import('eslint-plugin-prettier')).default,
     },
   },
 
