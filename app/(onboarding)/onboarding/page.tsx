@@ -46,7 +46,7 @@ const OnboardingPage: FC = () => {
             Answer a few quick questions for a personalized list, or pick a ready-made template.
           </p>
           <div className="flex flex-col gap-4">
-            <Card className="border-2 border-blue-600 bg-blue-50">
+            <Card className="border-2 border-blue-600 bg-blue-50 cursor-pointer transition hover:shadow-lg hover:bg-blue-100">
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-600 text-white rounded-full p-2">
@@ -77,7 +77,7 @@ const OnboardingPage: FC = () => {
                 </Button>
               </CardContent>
             </Card>
-            <Card className="border bg-white">
+            <Card className="border bg-white cursor-pointer transition hover:shadow-lg hover:bg-gray-50">
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-100 text-blue-600 rounded-full p-2">
