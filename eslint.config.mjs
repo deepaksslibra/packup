@@ -36,6 +36,9 @@ export default [
 
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    plugins: {
+      prettier: require('eslint-plugin-prettier'),
+    },
     rules: {
       'prettier/prettier': 'warn',
       'react/jsx-curly-brace-presence': ['warn', 'never'],
