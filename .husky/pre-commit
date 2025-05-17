@@ -1,0 +1,11 @@
+npm run lint -- --fix
+if [ $? -ne 0 ]; then
+  echo "Linting failed. Aborting commit."
+  exit 1
+fi
+
+npm run prettier
+if [ $? -ne 0 ]; then
+  echo "Prettier failed. Aborting commit."
+  exit 1
+fi 

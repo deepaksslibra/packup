@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import type { FC } from 'react';
 import { useState } from 'react';
 import {
@@ -22,7 +22,11 @@ const steps = [
   { step: 1, title: 'Trip Basics', description: 'Where and when are you traveling?' },
   { step: 2, title: 'About You', description: 'Tell us about yourself and your trip.' },
   { step: 3, title: 'Activities', description: 'Any specific activities planned?' },
-  { step: 4, title: 'Special Needs', description: 'Any special needs or considerations? (optional)' },
+  {
+    step: 4,
+    title: 'Special Needs',
+    description: 'Any special needs or considerations? (optional)',
+  },
 ];
 
 const SmartPlanningPage: FC = () => {
@@ -62,30 +66,79 @@ const SmartPlanningPage: FC = () => {
 
   // Activity options with icons
   const activityOptions = [
-    { label: 'Sightseeing', value: 'Sightseeing', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="#2563eb" strokeWidth="2"/><circle cx="12" cy="12" r="3" stroke="#2563eb" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Hiking', value: 'Hiking', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M6 21l6-6 6 6" stroke="#16a34a" strokeWidth="2"/><path d="M12 3v12" stroke="#16a34a" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Swimming/Beach', value: 'Swimming/Beach', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M2 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2" stroke="#0ea5e9" strokeWidth="2"/><circle cx="12" cy="8" r="3" stroke="#0ea5e9" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Sports', value: 'Sports', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="#f59e42" strokeWidth="2"/><path d="M4 12h16M12 4v16" stroke="#f59e42" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Nightlife', value: 'Nightlife', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#a21caf" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="#a21caf" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Other', value: 'Other', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2"/></svg>
-    ) },
+    {
+      label: 'Sightseeing',
+      value: 'Sightseeing',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8" stroke="#2563eb" strokeWidth="2" />
+          <circle cx="12" cy="12" r="3" stroke="#2563eb" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Hiking',
+      value: 'Hiking',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <path d="M6 21l6-6 6 6" stroke="#16a34a" strokeWidth="2" />
+          <path d="M12 3v12" stroke="#16a34a" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Swimming/Beach',
+      value: 'Swimming/Beach',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M2 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"
+            stroke="#0ea5e9"
+            strokeWidth="2"
+          />
+          <circle cx="12" cy="8" r="3" stroke="#0ea5e9" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Sports',
+      value: 'Sports',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="8" stroke="#f59e42" strokeWidth="2" />
+          <path d="M4 12h16M12 4v16" stroke="#f59e42" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Nightlife',
+      value: 'Nightlife',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+            stroke="#a21caf"
+            strokeWidth="2"
+          />
+          <circle cx="12" cy="12" r="5" stroke="#a21caf" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Other',
+      value: 'Other',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2" />
+        </svg>
+      ),
+    },
   ];
 
   const handleActivityToggle = (value: string) => {
     setAnswers((prev) => {
       const exists = prev.activities.includes(value);
-      let newActivities = exists
+      const newActivities = exists
         ? prev.activities.filter((a) => a !== value)
         : [...prev.activities, value];
       // If unselecting 'Other', clear customActivity
@@ -126,29 +179,82 @@ const SmartPlanningPage: FC = () => {
 
   // Gender and trip type icons
   const genderOptions = [
-    { label: 'Male', value: 'Male', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4" stroke="#2563eb" strokeWidth="2"/><path d="M6 20v-2a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v2" stroke="#2563eb" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Female', value: 'Female', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4" stroke="#d946ef" strokeWidth="2"/><path d="M12 14v6M9 20h6" stroke="#d946ef" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Prefer not to say', value: 'Prefer not to say', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="10" r="4" stroke="#64748b" strokeWidth="2"/><path d="M6 20h12" stroke="#64748b" strokeWidth="2"/></svg>
-    ) },
+    {
+      label: 'Male',
+      value: 'Male',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="10" r="4" stroke="#2563eb" strokeWidth="2" />
+          <path d="M6 20v-2a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v2" stroke="#2563eb" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Female',
+      value: 'Female',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="10" r="4" stroke="#d946ef" strokeWidth="2" />
+          <path d="M12 14v6M9 20h6" stroke="#d946ef" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Prefer not to say',
+      value: 'Prefer not to say',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="10" r="4" stroke="#64748b" strokeWidth="2" />
+          <path d="M6 20h12" stroke="#64748b" strokeWidth="2" />
+        </svg>
+      ),
+    },
   ];
   const tripTypeOptions = [
-    { label: 'Vacation/Leisure', value: 'Vacation/Leisure', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M3 17h18M4 17V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v10" stroke="#2563eb" strokeWidth="2"/><circle cx="8" cy="21" r="1" fill="#2563eb"/><circle cx="16" cy="21" r="1" fill="#2563eb"/></svg>
-    ) },
-    { label: 'Business', value: 'Business', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="2" stroke="#0ea5e9" strokeWidth="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#0ea5e9" strokeWidth="2"/></svg>
-    ) },
-    { label: 'Adventure/Outdoor', value: 'Adventure/Outdoor', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M3 21l9-18 9 18H3z" stroke="#16a34a" strokeWidth="2"/><circle cx="12" cy="17" r="1" fill="#16a34a"/></svg>
-    ) },
-    { label: 'Other', value: 'Other', icon: (
-      <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2"/></svg>
-    ) },
+    {
+      label: 'Vacation/Leisure',
+      value: 'Vacation/Leisure',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <path
+            d="M3 17h18M4 17V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v10"
+            stroke="#2563eb"
+            strokeWidth="2"
+          />
+          <circle cx="8" cy="21" r="1" fill="#2563eb" />
+          <circle cx="16" cy="21" r="1" fill="#2563eb" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Business',
+      value: 'Business',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <rect x="4" y="7" width="16" height="13" rx="2" stroke="#0ea5e9" strokeWidth="2" />
+          <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#0ea5e9" strokeWidth="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Adventure/Outdoor',
+      value: 'Adventure/Outdoor',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <path d="M3 21l9-18 9 18H3z" stroke="#16a34a" strokeWidth="2" />
+          <circle cx="12" cy="17" r="1" fill="#16a34a" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Other',
+      value: 'Other',
+      icon: (
+        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
+          <rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2" />
+        </svg>
+      ),
+    },
   ];
 
   return (
@@ -170,8 +276,16 @@ const SmartPlanningPage: FC = () => {
                       w-7 h-7 flex items-center justify-center text-base font-bold transition-all`}
                   />
                   <div className="flex flex-col text-left">
-                    <StepperTitle className={`text-base ${currentStep === step ? 'font-bold text-white' : 'font-medium text-blue-100'}`}>{title}</StepperTitle>
-                    <StepperDescription className={`text-xs ${currentStep === step ? 'text-blue-100' : 'text-blue-200'}`}>{description}</StepperDescription>
+                    <StepperTitle
+                      className={`text-base ${currentStep === step ? 'font-bold text-white' : 'font-medium text-blue-100'}`}
+                    >
+                      {title}
+                    </StepperTitle>
+                    <StepperDescription
+                      className={`text-xs ${currentStep === step ? 'text-blue-100' : 'text-blue-200'}`}
+                    >
+                      {description}
+                    </StepperDescription>
                   </div>
                 </div>
                 {step < steps.length && (
@@ -192,12 +306,18 @@ const SmartPlanningPage: FC = () => {
       {/* Right: Flat questionnaire area */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 bg-gray-50">
         <div className="w-full max-w-lg mx-auto py-12 flex flex-col items-start min-h-[600px] relative">
-          <h1 className="font-serif text-3xl font-bold text-blue-900 mb-2">{steps[currentStep - 1].title}</h1>
-          <p className="text-muted-foreground mb-10 text-base">{steps[currentStep - 1].description}</p>
+          <h1 className="font-serif text-3xl font-bold text-blue-900 mb-2">
+            {steps[currentStep - 1].title}
+          </h1>
+          <p className="text-muted-foreground mb-10 text-base">
+            {steps[currentStep - 1].description}
+          </p>
           {/* Render question for current step */}
           {currentStep === 1 && (
             <>
-              <label className="block text-sm font-medium mb-1" htmlFor="destination">Destination</label>
+              <label className="block text-sm font-medium mb-1" htmlFor="destination">
+                Destination
+              </label>
               <input
                 id="destination"
                 type="text"
@@ -209,7 +329,9 @@ const SmartPlanningPage: FC = () => {
               />
               <div className="flex gap-4 w-full mb-8">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1" htmlFor="date-start">Start Date</label>
+                  <label className="block text-sm font-medium mb-1" htmlFor="date-start">
+                    Start Date
+                  </label>
                   <input
                     id="date-start"
                     name="start"
@@ -220,7 +342,9 @@ const SmartPlanningPage: FC = () => {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1" htmlFor="date-end">End Date</label>
+                  <label className="block text-sm font-medium mb-1" htmlFor="date-end">
+                    End Date
+                  </label>
                   <input
                     id="date-end"
                     name="end"
@@ -242,7 +366,11 @@ const SmartPlanningPage: FC = () => {
                     <button
                       key={option.value}
                       type="button"
-                      onClick={() => handleGenderChange({ target: { value: option.value } } as any)}
+                      onClick={() =>
+                        handleGenderChange({
+                          target: { value: option.value },
+                        } as React.ChangeEvent<HTMLInputElement>)
+                      }
                       className={`flex flex-col items-center justify-center px-4 py-3 rounded-xl border transition-colors w-32 h-32 focus:outline-none
                         ${answers.gender === option.value ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-200 bg-white hover:bg-blue-50'}`}
                       aria-pressed={answers.gender === option.value}
@@ -294,7 +422,9 @@ const SmartPlanningPage: FC = () => {
                 </div>
                 {answers.activities.includes('Other') && (
                   <div className="mt-6">
-                    <label className="block text-sm font-medium mb-1" htmlFor="custom-activity">Please specify</label>
+                    <label className="block text-sm font-medium mb-1" htmlFor="custom-activity">
+                      Please specify
+                    </label>
                     <input
                       id="custom-activity"
                       type="text"
@@ -312,7 +442,9 @@ const SmartPlanningPage: FC = () => {
           {currentStep === 4 && (
             <>
               <div className="mb-8 w-full">
-                <label className="block text-sm font-medium mb-2" htmlFor="special-needs">Special Needs or Considerations (optional)</label>
+                <label className="block text-sm font-medium mb-2" htmlFor="special-needs">
+                  Special Needs or Considerations (optional)
+                </label>
                 <textarea
                   id="special-needs"
                   className="w-full border border-gray-200 rounded-md px-3 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary bg-white"
@@ -337,4 +469,4 @@ const SmartPlanningPage: FC = () => {
   );
 };
 
-export default SmartPlanningPage; 
+export default SmartPlanningPage;

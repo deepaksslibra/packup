@@ -11,4 +11,4 @@ const Loading = () => (
   </main>
 );
 
-export default Loading; 
+export default Loading;
