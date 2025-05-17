@@ -18,8 +18,7 @@ export default [
     'next/core-web-vitals',
     'next',
     'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:tailwindcss/recommended'
+    'plugin:react-hooks/recommended'
   ),
 
   {
@@ -47,7 +46,6 @@ export default [
 
   {
     plugins: {
-      tailwindcss: require('eslint-plugin-tailwindcss'),
       prettier: require('eslint-plugin-prettier'),
     },
   },
