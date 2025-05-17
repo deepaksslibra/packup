@@ -1,9 +1,15 @@
-#!/usr/bin/env sh
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
 npm run lint
 if [ $? -ne 0 ]; then
-  echo "Lint failed. Aborting push."
-  exit 1
+  echo "Lint failed. Running Prettier to fix code style issues..."
+  npm run prettier -- --write
+  npm run lint
+  if [ $? -ne 0 ]; then
+    echo "Lint still failing after Prettier. Aborting push."
+    exit 1
+  fi
 fi
 
 npx prettier --check .
