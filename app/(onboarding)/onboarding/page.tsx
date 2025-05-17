@@ -1,7 +1,9 @@
+'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
+import { useOnboardingStore } from '@/store/onboardingStore';
 
 /**
  * Onboarding page for the AI-Powered Packing Checklist app (PackUp).
@@ -9,6 +11,14 @@ import type { FC } from 'react';
  * @returns {JSX.Element} The onboarding screen component.
  */
 const OnboardingPage: FC = () => {
+  const router = useRouter();
+  const markOnboardingComplete = useOnboardingStore((state) => state.markOnboardingComplete);
+  
+  const handleNavigation = (path: string) => {
+    markOnboardingComplete();
+    router.push(path);
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Left panel */}
@@ -46,7 +56,17 @@ const OnboardingPage: FC = () => {
             Answer a few quick questions for a personalized list, or pick a ready-made template.
           </p>
           <div className="flex flex-col gap-4">
-            <Card className="border-2 border-blue-600 bg-blue-50 cursor-pointer transition hover:shadow-lg hover:bg-blue-100">
+            <Card 
+              className="border-2 border-blue-600 bg-blue-50 cursor-pointer transition hover:shadow-lg hover:bg-blue-100"
+              onClick={() => handleNavigation('/smart-planning')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleNavigation('/smart-planning');
+                }
+              }}
+            >
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-600 text-white rounded-full p-2">
@@ -62,22 +82,30 @@ const OnboardingPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <Button asChild variant="ghost" size="icon" className="text-blue-600">
-                  <Link href="/smart-planning">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                      <path
-                        d="M7 5l5 5-5 5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Link>
-                </Button>
+                <div className="text-blue-600">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                    <path
+                      d="M7 5l5 5-5 5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
               </CardContent>
             </Card>
-            <Card className="border bg-white cursor-pointer transition hover:shadow-lg hover:bg-gray-50">
+            <Card 
+              className="border bg-white cursor-pointer transition hover:shadow-lg hover:bg-gray-50"
+              onClick={() => handleNavigation('/templates')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleNavigation('/templates');
+                }
+              }}
+            >
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-100 text-blue-600 rounded-full p-2">
@@ -93,19 +121,17 @@ const OnboardingPage: FC = () => {
                     </div>
                   </div>
                 </div>
-                <Button asChild variant="ghost" size="icon" className="text-blue-600">
-                  <Link href="/templates">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                      <path
-                        d="M7 5l5 5-5 5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Link>
-                </Button>
+                <div className="text-blue-600">
+                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                    <path
+                      d="M7 5l5 5-5 5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
               </CardContent>
             </Card>
           </div>

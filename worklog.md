@@ -5,6 +5,7 @@ This document tracks all development work on the PackUp project. Each entry shou
 ## 2024-05-18: Onboarding UI & Interactivity
 
 ### Implemented Features
+
 - Built the Onboarding page UI (see app/(onboarding)/onboarding/page.tsx) as described in idea.md:
   - Left panel: App branding, tagline, and value proposition.
   - Right panel: Two clear options for starting a trip—Smart Planning (questionnaire) and Predefined Templates.
@@ -14,6 +15,7 @@ This document tracks all development work on the PackUp project. Each entry shou
   - Ensured both options are keyboard and screen-reader friendly.
 
 ### Notes
+
 - This completes the first step of the user journey: a welcoming, modern onboarding screen with clear next actions.
 - Next steps: Implement Smart Planning questionnaire flow and Predefined Templates selection as per idea.md.
 

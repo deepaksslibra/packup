@@ -1,6 +1,6 @@
 'use client';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useStepStore } from '@/store/stepStore';
 import {
   Stepper,
   StepperDescription,
@@ -30,38 +30,33 @@ const steps = [
 ];
 
 const SmartPlanningPage: FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [answers, setAnswers] = useState({
-    destination: '',
-    dates: { start: '', end: '' },
-    gender: '',
-    tripType: '',
-    activities: [] as string[],
-    specialNeeds: '',
-  });
-  const [customActivity, setCustomActivity] = useState('');
+  const currentStep = useStepStore((state) => state.currentStep);
+  const answers = useStepStore((state) => state.answers);
+  const setStep = useStepStore((state) => state.setStep);
+  const setAnswers = useStepStore((state) => state.setAnswers);
+  const reset = useStepStore((state) => state.reset);
 
   // Handlers for navigation
   const goNext = () => {
-    if (currentStep < steps.length) setCurrentStep((s) => s + 1);
+    if (currentStep < steps.length) setStep(currentStep + 1);
   };
   const goPrev = () => {
-    if (currentStep > 1) setCurrentStep((s) => s - 1);
+    if (currentStep > 1) setStep(currentStep - 1);
   };
 
   // Handlers for input changes
   const handleDestinationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswers((prev) => ({ ...prev, destination: e.target.value }));
+    setAnswers({ destination: e.target.value });
   };
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setAnswers((prev) => ({ ...prev, dates: { ...prev.dates, [name]: value } }));
+    setAnswers({ dates: { ...answers.dates, [name]: value } });
   };
   const handleGenderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswers((prev) => ({ ...prev, gender: e.target.value }));
+    setAnswers({ gender: e.target.value });
   };
   const handleTripTypeChange = (type: string) => {
-    setAnswers((prev) => ({ ...prev, tripType: type }));
+    setAnswers({ tripType: type });
   };
 
   // Activity options with icons
@@ -136,26 +131,23 @@ const SmartPlanningPage: FC = () => {
   ];
 
   const handleActivityToggle = (value: string) => {
-    setAnswers((prev) => {
-      const exists = prev.activities.includes(value);
-      const newActivities = exists
-        ? prev.activities.filter((a) => a !== value)
-        : [...prev.activities, value];
-      // If unselecting 'Other', clear customActivity
-      if (value === 'Other' && exists) setCustomActivity('');
-      return {
-        ...prev,
-        activities: newActivities,
-      };
+    const exists = answers.activities.includes(value);
+    const newActivities = exists
+      ? answers.activities.filter((a) => a !== value)
+      : [...answers.activities, value];
+    // If unselecting 'Other', clear customActivity
+    setAnswers({
+      activities: newActivities,
+      ...(value === 'Other' && exists ? { customActivity: '' } : {}),
     });
   };
 
   const handleCustomActivityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomActivity(e.target.value);
+    setAnswers({ customActivity: e.target.value });
   };
 
   const handleSpecialNeedsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setAnswers((prev) => ({ ...prev, specialNeeds: e.target.value }));
+    setAnswers({ specialNeeds: e.target.value });
   };
 
   // Validation for required steps
@@ -169,7 +161,7 @@ const SmartPlanningPage: FC = () => {
     if (currentStep === 3) {
       const hasOther = answers.activities.includes('Other');
       if (hasOther) {
-        return answers.activities.length === 0 || !customActivity.trim();
+        return answers.activities.length === 0 || !answers.customActivity.trim();
       }
       return answers.activities.length === 0;
     }
@@ -430,7 +422,7 @@ const SmartPlanningPage: FC = () => {
                       type="text"
                       className="w-full border border-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary bg-white"
                       placeholder="Enter your activity"
-                      value={customActivity}
+                      value={answers.customActivity}
                       onChange={handleCustomActivityChange}
                       autoFocus
                     />
