@@ -1,3 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Update the worklog if the script exists
+if [ -f ".cursor/rules/update_worklog" ]; then
+  echo "Updating worklog before push..."
+  ./.cursor/rules/update_worklog
+  
+  # Add the updated worklog to the commit
+  git add worklog.md
+fi
+
 npm run lint
 if [ $? -ne 0 ]; then
   echo "Lint failed. Aborting push."
