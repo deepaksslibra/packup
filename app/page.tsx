@@ -10,7 +10,7 @@ import { useEffect } from 'react';
  */
 export default function Home() {
   const hasCompletedOnboarding = useOnboardingStore((state) => state.hasCompletedOnboarding);
-  
+
   useEffect(() => {
     // Use client-side redirect to avoid hydration issues
     if (hasCompletedOnboarding) {
@@ -21,7 +21,7 @@ export default function Home() {
       window.location.href = '/onboarding';
     }
   }, [hasCompletedOnboarding]);
-  
+
   // Return null while redirect happens
   return null;
 }

@@ -52,4 +52,4 @@ export const useStepStore = create<StepStoreState>()(
       name: 'smart-planning-step-store',
     }
   )
-); 
+);

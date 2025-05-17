@@ -13,7 +13,7 @@ import { useOnboardingStore } from '@/store/onboardingStore';
 const OnboardingPage: FC = () => {
   const router = useRouter();
   const markOnboardingComplete = useOnboardingStore((state) => state.markOnboardingComplete);
-  
+
   const handleNavigation = (path: string) => {
     markOnboardingComplete();
     router.push(path);
@@ -56,7 +56,7 @@ const OnboardingPage: FC = () => {
             Answer a few quick questions for a personalized list, or pick a ready-made template.
           </p>
           <div className="flex flex-col gap-4">
-            <Card 
+            <Card
               className="border-2 border-blue-600 bg-blue-50 cursor-pointer transition hover:shadow-lg hover:bg-blue-100"
               onClick={() => handleNavigation('/smart-planning')}
               role="button"
@@ -95,7 +95,7 @@ const OnboardingPage: FC = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card 
+            <Card
               className="border bg-white cursor-pointer transition hover:shadow-lg hover:bg-gray-50"
               onClick={() => handleNavigation('/templates')}
               role="button"

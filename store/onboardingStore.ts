@@ -22,4 +22,4 @@ export const useOnboardingStore = create<OnboardingState>()(
       name: 'onboarding-store',
     }
   )
-); 
+);
