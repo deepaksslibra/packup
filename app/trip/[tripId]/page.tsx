@@ -1,11 +1,14 @@
+'use client';
+
+import { useParams } from 'next/navigation';
 import TripEditor from './_components/TripEditor';
 
 /**
- * Trip Editing Page
- * @param {object} props - The page props.
- * @param {object} props.params - Route parameters.
- * @param {string} props.params.tripId - The ID of the trip to edit.
+ * Trip Editing Page that gets the tripId from the URL params
  */
-export default function TripEditingPage({ params }: { params: { tripId: string } }) {
-  return <TripEditor tripId={params.tripId} />;
-} 
+export default function TripEditingPage() {
+  const params = useParams();
+  const tripId = params.tripId as string;
+
+  return <TripEditor tripId={tripId} />;
+}

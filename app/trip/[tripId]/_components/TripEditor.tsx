@@ -25,4 +25,4 @@ const TripEditor = ({ tripId }: { tripId: string }) => {
   );
 };
 
-export default TripEditor; 
+export default TripEditor;

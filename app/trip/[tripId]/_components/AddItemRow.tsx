@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { useTripStore } from '@/store/tripStore';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 /**
  * AddItemRow renders a button to add a new item to a category, opening a dialog with a form.
@@ -47,19 +53,46 @@ const AddItemRow = ({ category }: { category: string }) => {
           </DialogHeader>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="add-item-name">Item Name</label>
-              <input id="add-item-name" value={name} onChange={e => setName(e.target.value)} required className="w-full border rounded px-2 py-1" />
+              <label className="block text-sm font-medium mb-1" htmlFor="add-item-name">
+                Item Name
+              </label>
+              <input
+                id="add-item-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full border rounded px-2 py-1"
+              />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="add-item-quantity">Quantity</label>
-              <input id="add-item-quantity" type="number" min={1} value={quantity} onChange={e => setQuantity(Number(e.target.value))} required className="w-full border rounded px-2 py-1" />
+              <label className="block text-sm font-medium mb-1" htmlFor="add-item-quantity">
+                Quantity
+              </label>
+              <input
+                id="add-item-quantity"
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                required
+                className="w-full border rounded px-2 py-1"
+              />
             </div>
             <div className="flex items-center gap-2">
-              <input id="add-item-essential" type="checkbox" checked={essential} onChange={e => setEssential(e.target.checked)} />
-              <label htmlFor="add-item-essential" className="text-sm">Essential</label>
+              <input
+                id="add-item-essential"
+                type="checkbox"
+                checked={essential}
+                onChange={(e) => setEssential(e.target.checked)}
+              />
+              <label htmlFor="add-item-essential" className="text-sm">
+                Essential
+              </label>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
               <Button type="submit">Add</Button>
             </DialogFooter>
           </form>
@@ -69,4 +102,4 @@ const AddItemRow = ({ category }: { category: string }) => {
   );
 };
 
-export default AddItemRow; 
+export default AddItemRow;

@@ -24,7 +24,9 @@ const TripEditHeader = ({
     <header className="flex flex-col gap-2 mb-8">
       <div className="flex items-center gap-4">
         <h1 className="text-3xl font-bold tracking-tight flex-1 truncate">{tripName}</h1>
-        <Button size="sm" variant="outline" onClick={onRenameClick} aria-label="Rename trip">Rename</Button>
+        <Button size="sm" variant="outline" onClick={onRenameClick} aria-label="Rename trip">
+          Rename
+        </Button>
       </div>
       <div className="text-gray-500 text-sm flex gap-4">
         <span>{totalItems} items</span>
@@ -34,4 +36,4 @@ const TripEditHeader = ({
   );
 };
 
-export default TripEditHeader; 
+export default TripEditHeader;

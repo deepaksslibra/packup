@@ -66,14 +66,18 @@ const TemplatesPage: FC = () => {
   const addTrip = useTripStore((state) => state.addTrip);
 
   // Keyboard accessibility: select on Enter/Space
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, key: string, tpl: typeof templates[number]) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    key: string,
+    tpl: (typeof templates)[number]
+  ) => {
     if (e.key === 'Enter' || e.key === ' ') {
       setSelected(key);
       handleTemplateSelect(tpl);
     }
   };
 
-  const handleTemplateSelect = (tpl: typeof templates[number]) => {
+  const handleTemplateSelect = (tpl: (typeof templates)[number]) => {
     const newTrip: Trip = {
       id: uuidv4(),
       name: tpl.label,

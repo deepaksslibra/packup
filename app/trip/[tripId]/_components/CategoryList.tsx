@@ -17,4 +17,4 @@ const CategoryList = ({ categories }: { categories: Record<string, PackingItem[]
   );
 };
 
-export default CategoryList; 
+export default CategoryList;

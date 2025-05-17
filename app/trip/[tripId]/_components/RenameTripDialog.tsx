@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 /**
@@ -12,11 +18,23 @@ import { Button } from '@/components/ui/button';
  * @param {string} props.tripName - Current trip name.
  * @param {(newName: string) => void} props.onRename - Callback to rename the trip.
  */
-const RenameTripDialog = ({ open, setOpen, tripName, onRename }: { open: boolean; setOpen: (open: boolean) => void; tripName: string; onRename: (newName: string) => void; }) => {
+const RenameTripDialog = ({
+  open,
+  setOpen,
+  tripName,
+  onRename,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  tripName: string;
+  onRename: (newName: string) => void;
+}) => {
   const [name, setName] = useState(tripName);
 
   // Keep input in sync if tripName changes
-  React.useEffect(() => { setName(tripName); }, [tripName]);
+  React.useEffect(() => {
+    setName(tripName);
+  }, [tripName]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,11 +51,21 @@ const RenameTripDialog = ({ open, setOpen, tripName, onRename }: { open: boolean
         </DialogHeader>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="rename-trip-name">Trip Name</label>
-            <input id="rename-trip-name" value={name} onChange={e => setName(e.target.value)} required className="w-full border rounded px-2 py-1" />
+            <label className="block text-sm font-medium mb-1" htmlFor="rename-trip-name">
+              Trip Name
+            </label>
+            <input
+              id="rename-trip-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full border rounded px-2 py-1"
+            />
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
             <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
@@ -46,4 +74,4 @@ const RenameTripDialog = ({ open, setOpen, tripName, onRename }: { open: boolean
   );
 };
 
-export default RenameTripDialog; 
+export default RenameTripDialog;

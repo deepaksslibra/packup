@@ -7,4 +7,4 @@ export default function Error({ error }: { error: Error }) {
       <pre className="bg-red-100 p-2 rounded text-sm">{error.message}</pre>
     </div>
   );
-} 
+}

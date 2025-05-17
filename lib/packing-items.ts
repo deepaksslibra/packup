@@ -381,4 +381,4 @@ export const PACKING_MASTER_LIST: PackingCategory[] = [
       { name: 'Emergency beacon', tags: ['remote', 'all'] },
     ],
   },
-]; 
+];

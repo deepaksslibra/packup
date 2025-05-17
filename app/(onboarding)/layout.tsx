@@ -5,10 +5,6 @@
  * @param {React.ReactNode} props.children - The page content.
  * @returns {JSX.Element} The group layout.
  */
-export default function OnboardingGroupLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function OnboardingGroupLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
-} 
+}

@@ -39,4 +39,4 @@ export const useTripStore = create<TripState>()(
     }),
     { name: 'trip-storage' }
   )
-); 
+);

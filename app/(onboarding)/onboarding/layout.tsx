@@ -28,9 +28,7 @@ export default function OnboardingLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased font-sans">
-        {children}
-      </body>
+      <body className="antialiased font-sans">{children}</body>
     </html>
   );
-} 
+}

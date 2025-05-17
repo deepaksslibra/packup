@@ -26,4 +26,4 @@ export interface Trip {
   name: string;
   createdAt: string;
   items: PackingItem[];
-} 
+}

@@ -7,4 +7,4 @@ export default function Loading() {
       <div className="h-4 bg-gray-100 rounded w-1/3" />
     </div>
   );
-} 
+}

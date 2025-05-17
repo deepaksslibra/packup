@@ -14,4 +14,4 @@ const AddItemForm = () => {
   );
 };
 
-export default AddItemForm; 
+export default AddItemForm;
