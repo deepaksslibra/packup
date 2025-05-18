@@ -19,6 +19,7 @@ import {
   PersonSimpleTaiChi,
   Backpack,
   Sailboat,
+  ArrowLeft,
 } from '@phosphor-icons/react';
 
 /**
@@ -161,6 +162,15 @@ const TemplatesPage: FC = () => {
       {/* Left panel - fixed on desktop, non-fixed on mobile */}
       <div className="w-full md:w-1/2 bg-blue-600 flex flex-col justify-center items-start md:items-center py-6 px-5 md:p-8 text-white md:h-screen md:sticky md:top-0">
         <div className="flex flex-col gap-4 md:gap-6 w-full max-w-xs">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push('/onboarding')}
+            className="text-white hover:bg-blue-700 self-start mb-2"
+            aria-label="Go back to onboarding"
+          >
+            <ArrowLeft size={24} weight="bold" />
+          </Button>
           <h1 className="font-serif text-2xl md:text-4xl font-bold leading-tight">
             Choose a trip template
           </h1>

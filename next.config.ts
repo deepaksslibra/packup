@@ -4,10 +4,10 @@ const nextConfig: NextConfig = {
   /* config options here */
   // swcMinify is not recognized in new Next.js versions
   // swcMinify: true,
-  
+
   // Instead of static export, use a regular server build
-  // output: 'export', 
-  
+  // output: 'export',
+
   images: {
     domains: ['localhost'], // Add any other image domains you need
     // Remove unoptimized since we're not using static export

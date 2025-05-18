@@ -221,7 +221,7 @@ export default function TripsPage() {
                     Edit
                   </Button>
                   <Button
-                    className="flex-1 justify-between px-2 md:px-3 h-8 md:h-9 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm"
+                    className="flex-1 justify-center gap-1 md:gap-2 px-2 md:px-3 h-8 md:h-9 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm"
                     onClick={() => handleStartPacking(trip.id)}
                   >
                     Pack

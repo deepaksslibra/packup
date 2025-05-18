@@ -34,6 +34,7 @@ import {
   Compass,
   CaretDown,
   CaretUp,
+  ArrowLeft,
 } from '@phosphor-icons/react';
 import PlacesAutocomplete from './_components/PlacesAutocomplete';
 
@@ -303,18 +304,29 @@ const SmartPlanningPage: FC = () => {
       {/* Mobile header - collapses to show step number and title */}
       <div className="md:hidden bg-blue-600 text-white">
         <div className="p-4 flex flex-col">
-          <div
-            className="flex items-center justify-between cursor-pointer"
-            onClick={() => setShowStepperOnMobile(!showStepperOnMobile)}
-          >
-            <h2 className="text-xl font-bold font-serif">Smart Planning</h2>
-            <div className="flex items-center">
+          <div className="flex items-center justify-between mb-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push('/onboarding')}
+              className="text-white hover:bg-blue-700"
+              aria-label="Go back to home"
+            >
+              <ArrowLeft size={24} weight="bold" />
+            </Button>
+            
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowStepperOnMobile(!showStepperOnMobile)}
+            >
               <div className="bg-white text-blue-600 w-7 h-7 rounded-full flex items-center justify-center mr-2 font-semibold">
                 {currentStep}
               </div>
               {showStepperOnMobile ? <CaretUp size={20} /> : <CaretDown size={20} />}
             </div>
           </div>
+          
+          <h2 className="text-xl font-bold font-serif">Smart Planning</h2>
 
           {/* Mobile step title and description */}
           <div className="mt-2">
@@ -368,7 +380,16 @@ const SmartPlanningPage: FC = () => {
       {/* Left: Blue panel with stepper (desktop only) */}
       <div className="hidden md:flex md:w-1/2 bg-blue-600 flex-col items-center justify-center p-0 text-white">
         <div className="flex flex-col justify-center h-full w-full max-w-sm px-10 py-16">
-          {/* Section header */}
+          {/* Back button and section header */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push('/onboarding')}
+            className="text-white hover:bg-blue-700 self-start mb-4"
+            aria-label="Go back to home"
+          >
+            <ArrowLeft size={24} weight="bold" />
+          </Button>
           <h2 className="text-3xl font-bold font-serif mb-10">Smart Planning</h2>
           {/* Stepper */}
           <Stepper value={currentStep} orientation="vertical" className="gap-0">
@@ -446,6 +467,7 @@ const SmartPlanningPage: FC = () => {
                       className="w-full border border-gray-200 rounded-md px-3 py-2 h-11 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-base"
                       value={answers.dates.start}
                       onChange={handleDateChange}
+                      min={new Date().toISOString().split('T')[0]} /* Today's date in YYYY-MM-DD format */
                     />
                   </div>
                   <div className="flex-1">
@@ -459,6 +481,7 @@ const SmartPlanningPage: FC = () => {
                       className="w-full border border-gray-200 rounded-md px-3 py-2 h-11 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-base"
                       value={answers.dates.end}
                       onChange={handleDateChange}
+                      min={answers.dates.start || new Date().toISOString().split('T')[0]} /* Must be on or after start date */
                     />
                   </div>
                 </div>
@@ -611,14 +634,17 @@ const SmartPlanningPage: FC = () => {
 
           {/* Navigation buttons - always at bottom of form container */}
           <div className="flex justify-between w-full mt-auto pt-6 md:pt-8">
-            <Button
-              variant="ghost"
-              onClick={goPrev}
-              disabled={currentStep === 1 || isFinishing}
-              className="h-11 px-4 min-w-[100px]"
-            >
-              Previous
-            </Button>
+            {currentStep > 1 && (
+              <Button
+                variant="ghost"
+                onClick={goPrev}
+                disabled={isFinishing}
+                className="h-11 px-4 min-w-[100px]"
+              >
+                Previous
+              </Button>
+            )}
+            {currentStep === 1 && <div></div>} {/* Empty div to maintain layout when button is hidden */}
             <Button
               onClick={currentStep === steps.length ? saveTrip : goNext}
               disabled={isNextDisabled() || isFinishing}
