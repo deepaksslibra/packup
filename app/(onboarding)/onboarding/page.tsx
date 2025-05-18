@@ -71,10 +71,17 @@ const OnboardingPage: FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-600 text-white rounded-full p-2">
                     {/* Smart Planning icon */}
-                    <ChatCircleText size={20} weight="fill" aria-label="Chat" className="md:w-6 md:h-6" />
+                    <ChatCircleText
+                      size={20}
+                      weight="fill"
+                      aria-label="Chat"
+                      className="md:w-6 md:h-6"
+                    />
                   </div>
                   <div>
-                    <div className="font-semibold text-blue-900 text-sm md:text-base">Smart Planning</div>
+                    <div className="font-semibold text-blue-900 text-sm md:text-base">
+                      Smart Planning
+                    </div>
                     <div className="text-xs text-blue-800 opacity-80">
                       Answer a few questions for a tailored packing list
                     </div>
@@ -100,10 +107,17 @@ const OnboardingPage: FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-100 text-blue-600 rounded-full p-2">
                     {/* Template icon */}
-                    <ClipboardText size={20} weight="fill" aria-label="Template" className="md:w-6 md:h-6" />
+                    <ClipboardText
+                      size={20}
+                      weight="fill"
+                      aria-label="Template"
+                      className="md:w-6 md:h-6"
+                    />
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-800 text-sm md:text-base">Predefined Templates</div>
+                    <div className="font-semibold text-gray-800 text-sm md:text-base">
+                      Predefined Templates
+                    </div>
                     <div className="text-xs text-gray-600 opacity-80">
                       Choose from popular trip types and customize
                     </div>

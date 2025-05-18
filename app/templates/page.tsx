@@ -157,25 +157,31 @@ const TemplatesPage: FC = () => {
   };
 
   return (
-    <div className="flex bg-gray-50">
-      {/* Left panel - fixed */}
-      <div className="w-full md:w-1/2 bg-blue-600 flex flex-col justify-center items-center p-8 text-white h-screen sticky top-0">
-        <div className="flex flex-col gap-6 max-w-xs w-full">
-          <h1 className="font-serif text-4xl font-bold leading-tight">Choose a trip template</h1>
-          <p className="text-base opacity-90">
+    <div className="flex flex-col md:flex-row bg-gray-50">
+      {/* Left panel - fixed on desktop, non-fixed on mobile */}
+      <div className="w-full md:w-1/2 bg-blue-600 flex flex-col justify-center items-start md:items-center py-6 px-5 md:p-8 text-white md:h-screen md:sticky md:top-0">
+        <div className="flex flex-col gap-4 md:gap-6 w-full max-w-xs">
+          <h1 className="font-serif text-2xl md:text-4xl font-bold leading-tight">
+            Choose a trip template
+          </h1>
+          <p className="text-sm md:text-base opacity-90">
             Start with a popular trip type and customize your packing list in seconds.
           </p>
-          <p className="text-sm opacity-80 mt-2">
+          <p className="text-xs md:text-sm opacity-80 mt-2 hidden md:block">
             Templates are a fast way to get started—perfect for common travel scenarios.
           </p>
         </div>
       </div>
       {/* Right panel - scrollable */}
-      <div className="w-full md:w-1/2 flex flex-col p-8 overflow-y-auto max-h-screen">
+      <div className="w-full md:w-1/2 flex flex-col p-5 md:p-8 overflow-y-auto md:max-h-screen">
         <div className="w-full max-w-2xl mx-auto">
-          <h2 className="font-serif text-2xl font-bold mb-2 text-gray-800">Select a Template</h2>
-          <p className="text-gray-500 mb-8">Pick a template to quickly generate a packing list.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
+          <h2 className="font-serif text-xl md:text-2xl font-bold mb-2 text-gray-800">
+            Select a Template
+          </h2>
+          <p className="text-sm md:text-base text-gray-500 mb-4 md:mb-8">
+            Pick a template to quickly generate a packing list.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pb-8">
             {templates.map((tpl) => {
               const isSelected = selected === tpl.key;
               let bgColor = 'bg-white';
@@ -256,18 +262,18 @@ const TemplatesPage: FC = () => {
                     ${hoverBgColor} hover:shadow-lg hover:border-blue-400 focus:ring-2 focus:ring-blue-300
                   `}
                 >
-                  <CardContent className="flex flex-col items-start gap-4 p-6">
-                    <div className="flex items-center gap-3">
+                  <CardContent className="flex flex-col items-start gap-3 md:gap-4 p-4 md:p-6">
+                    <div className="flex items-start md:items-center gap-3">
                       <div
-                        className={`${iconBgColor} rounded-full p-3 w-12 h-12 flex items-center justify-center`}
+                        className={`${iconBgColor} rounded-full p-2 md:p-3 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0`}
                       >
                         {tpl.icon}
                       </div>
                       <div>
-                        <div className="font-satoshi font-semibold text-gray-900 text-[20px]">
+                        <div className="font-satoshi font-semibold text-gray-900 text-base md:text-[20px]">
                           {tpl.label}
                         </div>
-                        <div className="text-sm text-gray-600 opacity-80">{tpl.description}</div>
+                        <div className="text-xs md:text-sm text-gray-600 opacity-80">{tpl.description}</div>
                       </div>
                     </div>
                   </CardContent>
