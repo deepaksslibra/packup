@@ -299,8 +299,8 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
             <Button variant="outline" onClick={() => setCategoryToRemoveItems(null)}>
               Cancel
             </Button>
-            <Button 
-              variant="default" 
+            <Button
+              variant="default"
               onClick={handleConfirmRemoveOptionalItems}
               className="bg-amber-600 hover:bg-amber-700"
             >
