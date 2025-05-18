@@ -2,26 +2,26 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'PackUp - Smart Travel Packing Lists',
+  title: 'PackUp - Never Forget Essential Travel Items Again',
   description:
-    'PackUp helps you create perfect AI-powered packing lists for any trip. Never forget essential items again.',
+    'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
   generator: 'Next.js',
   applicationName: 'PackUp',
   keywords: ['travel', 'packing', 'trips', 'smart packing', 'travel planning', 'packing list'],
   authors: [{ name: 'PackUp Team' }],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://packup.travel'),
+  metadataBase: new URL('https://packup-two.vercel.app'),
   openGraph: {
     title: 'PackUp - Never Forget Essential Travel Items Again',
     description:
       'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
-    url: 'https://packup.travel',
+    url: 'https://packup-two.vercel.app',
     siteName: 'PackUp',
     images: [
       {
-        url: '/og.png',
+        url: 'https://opengraph.b-cdn.net/production/images/781721c9-4028-45c6-b385-e8a8a2bbd374.png?token=ZaOIUQEqyb6Gypn1RCQ9iFipEp5xkIp_9_R0TynudOg&height=961&width=1200&expires=33283600317',
         width: 1200,
-        height: 630,
-        alt: 'PackUp - Smart Travel Packing Lists',
+        height: 961,
+        alt: 'PackUp - Never Forget Essential Travel Items Again',
       },
     ],
     locale: 'en_US',
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PackUp - Smart Travel Packing Lists',
-    description: 'AI-powered packing lists for any destination. Travel confidently with PackUp.',
-    images: ['/og.png'],
+    title: 'PackUp - Never Forget Essential Travel Items Again',
+    description: 'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
+    images: ['https://opengraph.b-cdn.net/production/images/781721c9-4028-45c6-b385-e8a8a2bbd374.png?token=ZaOIUQEqyb6Gypn1RCQ9iFipEp5xkIp_9_R0TynudOg&height=961&width=1200&expires=33283600317'],
     creator: '@packupapp',
   },
   icons: {
