@@ -22,6 +22,11 @@ export interface TripDetails {
   transportation: string;
   travelParty: string[];
   additionalInfo?: string;
+  luggageConstraints?: {
+    maxTotalWeight?: number; // in kg
+    luggageType?: string[]; // e.g. ["small backpack", "carry-on", "checked bag"]
+    weightDistribution?: string; // any additional information about weight distribution
+  };
 }
 
 /**
@@ -53,6 +58,8 @@ export interface PackingListResponse {
  */
 export async function generatePackingList(tripDetails: TripDetails): Promise<PackingListResponse> {
   try {
+    console.log('Generating packing list with trip details:', JSON.stringify(tripDetails, null, 2));
+
     // Check if API key is available
     if (!API_KEY) {
       return {
@@ -95,19 +102,137 @@ Accommodation: ${tripDetails.accommodation}
 Transportation: ${tripDetails.transportation}
 Travel Party: ${tripDetails.travelParty.join(', ')}
 ${tripDetails.additionalInfo ? `Additional Info: ${tripDetails.additionalInfo}` : ''}
+${
+  tripDetails.luggageConstraints
+    ? `
+Luggage Constraints:
+${tripDetails.luggageConstraints.maxTotalWeight ? `- Maximum Total Weight: ${tripDetails.luggageConstraints.maxTotalWeight} kg` : ''}
+${tripDetails.luggageConstraints.luggageType ? `- Luggage Type: ${tripDetails.luggageConstraints.luggageType.join(', ')}` : ''}
+${tripDetails.luggageConstraints.weightDistribution ? `- Weight Distribution: ${tripDetails.luggageConstraints.weightDistribution}` : ''}
+`
+    : ''
+}
 `;
 
-    // Create prompt for Gemini
-    const packingPrompt = `
-You are a smart packing assistant helping to create a personalized packing list. 
+    // Create prompt for Gemini with stronger emphasis on weight limits
+    const maxWeight = tripDetails.luggageConstraints?.maxTotalWeight
+      ? tripDetails.luggageConstraints.maxTotalWeight
+      : 5; // Default to 5kg if not specified
+
+    // Define the optimized prompt version (new)
+    const optimizedPackingPrompt = `
+You are a smart packing assistant helping a traveler create a personalized, space-aware, and weight-optimized packing list using a master item list.
+
+📌 OBJECTIVE:
+Create a tailored list of items to pack for a specific trip, using only items from the provided master list, based on:
+- Trip location, duration, activities, and weather
+- User-defined total max weight limit (in grams)
+- Available luggage types and their physical constraints
+
+TRIP DETAILS:
+${tripDetailsFormatted}
+
+🧳 LUGGAGE BEHAVIOR:
+Pack items based on luggage type:
+${
+  tripDetails.luggageConstraints?.luggageType
+    ?.map((type) => {
+      if (type.toLowerCase().includes('backpack'))
+        return '- Hand Carry Backpack: Prioritize compact, lightweight, frequently accessed items (e.g. electronics, snacks, daily use). If this is the only luggage prioritise what items will fit';
+      if (type.toLowerCase().includes('cabin'))
+        return '- Cabin Bag: For stuff which will exceed a backpack but will be too less for a large check in bag';
+      if (type.toLowerCase().includes('check-in') || type.toLowerCase().includes('large'))
+        return '- Check-in Bag: For bulkier, heavier items (e.g. coats, shoes, extras).';
+      return `- ${type}: General items`;
+    })
+    .join('\n') || '- Default luggage: General items'
+}
+
+⚖️ PACKING LOGIC
+Use 85–95% of the user's weight allowance. (Example: if ${maxWeight * 1000}g allowed, target ${Math.round(maxWeight * 850)}–${Math.round(maxWeight * 950)}g)
+
+NEVER exceed 100% of total allowed weight
+
+If space or weight is tight:
+- Prioritize essential, multi-use, weather-appropriate items
+- Limit quantity and focus on high-utility gear
+- If needed, only include 1–2 absolutely critical items
+
+If space or weight allows:
+- Add comfort items and backups
+- Include regionally buyable items if convenient
+
+🛍️ BUYABILITY RULE
+Exclude items that are commonly available at the destination UNLESS:
+- They are hard to find in that region OR
+- There's enough leftover space/weight to include them comfortably
+
+Here is the master list of items to choose from:
+${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n')}
+
+✅ FOR EACH ITEM, RETURN:
+{
+  "name": "Item Name",
+  "quantity": 2,
+  "weight": 300, // in grams (per single item)
+  "essential": true, // true = must-carry, false = optional/comfort
+  "explanation": "Explain why this is included, addressing the traveler directly",
+  "category": "Category from the master list"
+}
+
+✅ FINAL OUTPUT FORMAT:
+{
+  "items": [ /* array of selected items */ ],
+  "approximateWeight": "${Math.round(maxWeight * 900)} grams", // STRICTLY calculated as sum of (quantity × weight) for all items
+  "suggestedTripName": "Fun and fitting name for the trip",
+  "weather": {
+    "temperature": "Average temperature (°C)",
+    "condition": "Clear / Rainy / Cold / Variable etc.",
+    "forecast": "One-sentence summary of the trip's weather",
+    "weatherTags": ["Cold", "Dry"]
+  },
+  "packingStrategy": "2–3 sentence summary explaining how you optimized item selection based on weather, activities, space, and weight. Mention excluded buyable items, prioritized essentials, and anything added due to leftover capacity."
+}
+
+🔒 HARD CONSTRAINTS:
+- Use only items from the master list
+- Total calculated weight (approximateWeight) must be mathematically accurate
+- Buyable items should only be included if justified by availability, importance, or spare capacity
+- Prioritize climate-specific protection if weather is extreme
+- Only select what would logically fit in the luggage types given their constraints
+- Use a personal tone in explanation, directly addressing the traveler
+`;
+
+    // Choose which prompt to use (set to true to use the optimized prompt)
+    const useOptimizedPrompt = true;
+    const packingPrompt = useOptimizedPrompt
+      ? optimizedPackingPrompt
+      : `
+You are a smart packing assistant helping to create a personalized packing list that MAXIMIZES luggage capacity.
 Search the internet for weather information and local conditions for this trip:
 
 ${tripDetailsFormatted}
 
+CRITICAL WEIGHT TARGET: You MUST aim to utilize 85-95% of the available ${maxWeight} kg weight allowance.
+- DO NOT return a list with less than 85% of the weight allowance utilized
+- For larger weight allowances (>15kg): Include extra quantities, comfort items, and contingency supplies
+- For medium weight allowances (8-15kg): Include reasonable quantities plus select comfort items
+- For small weight allowances (<8kg): Focus on essentials but still aim for 85-95% capacity
+
+CRITICAL SPACE CONSTRAINTS: You MUST consider the physical dimensions and space limitations of the selected luggage:
+${tripDetails.luggageConstraints?.luggageType?.map((type) => `- ${type}`).join('\n') || '- Default luggage'}
+
+Consider these luggage-specific constraints:
+- Backpack: Prioritize compact, foldable items; avoid bulky/rigid objects; consider packing cubes for organization
+- Small Cabin Luggage: Smaller overall volume but can accommodate some rigid items; limited height/width constraints
+- Large Check-in Luggage: More volume for bulky items and higher quantities, but still finite space
+
+This is EXTREMELY important: Your primary goal is to utilize the available weight effectively WHILE ensuring items will physically fit in the specified luggage types.
+
 Based on this information, select items from the master packing list below that would be appropriate for this specific trip.
 For each selected item, provide:
 1. Whether it's essential or optional
-2. Recommended quantity
+2. Recommended quantity (use higher quantities where appropriate to maximize weight usage)
 3. An estimated weight per item in grams
 4. A personalized, direct explanation written in second person ("you") of why the traveler needs this item
 
@@ -116,7 +241,7 @@ Write explanations in a conversational, personalized tone, addressing the travel
 - "You should pack 3 of these since you're prone to catching colds in rainy weather"
 - "Pack this for your hiking excursion at Mount Fuji, as temperatures drop significantly at higher elevations"
 
-Consider weather conditions, trip duration, activities, local customs, and travel requirements. Give great impetus to overall luggage weight and aim to recommend only what's truly necessary. Be conservative with quantities to keep total weight manageable.
+Consider weather conditions, trip duration, activities, local customs, and travel requirements. MAXIMIZE for the ${maxWeight} kg weight limit - aim for at least 85-95% of the available weight capacity. Choose larger quantities and additional comfort items to make efficient use of weight allowance WHILE ENSURING EVERYTHING FITS in the specified luggage.
 
 Here is the master list of items to choose from:
 ${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n')}
@@ -142,9 +267,13 @@ Format your response as valid JSON with this structure:
     "forecast": "One concise line summarizing the weather for the trip duration",
     "weatherTags": ["Chilly", "Rainy"] // Very concise 1-2 word tags only
   },
-  "packingStrategy": "A concise paragraph (max 2-3 sentences) about the packing approach. Emphasize weight considerations and how you've optimized the list to maintain a manageable luggage weight. Use language like 'Lightweight clothing is suggested for hot conditions' or 'Multiple layers are recommended for variable temperatures'."
+  "packingStrategy": "A concise paragraph (max 2-3 sentences) about the packing approach. Explain how you've MAXIMIZED the list to reach 85-95% of the ${maxWeight} kg weight limit while ensuring everything fits in the ${tripDetails.luggageConstraints?.luggageType?.join(', ') || 'luggage'}. Highlight items you've added for comfort or convenience due to the generous weight allowance."
 }
 
+First calculate how much weight you have to work with: ${maxWeight} kg = ${maxWeight * 1000} grams.
+Your target is to include items totaling ${Math.round(maxWeight * 850)} - ${Math.round(maxWeight * 950)} grams.
+If your first draft is too light, increase quantities or add more comfort items.
+DOUBLE-CHECK your calculations before responding.
 Only include items from the provided master list. Ensure the category matches exactly what was provided.
 Do not include any explanatory text outside the JSON structure.
 `;
@@ -163,7 +292,7 @@ Do not include any explanatory text outside the JSON structure.
             contents: [{ role: 'user', parts: [{ text: packingPrompt }] }],
             generationConfig: {
               temperature: 0.2, // Lower temperature for more factual responses
-              maxOutputTokens: 4096,
+              maxOutputTokens: 8192, // Increased to allow for more comprehensive responses
             },
             tools: [googleSearchTool],
           });
@@ -181,6 +310,7 @@ Do not include any explanatory text outside the JSON structure.
     };
 
     const response = await fetchGeminiContentWithRetry(2);
+    console.log('Raw response from Gemini:', response);
 
     try {
       // Parse the JSON response
@@ -189,63 +319,152 @@ Do not include any explanatory text outside the JSON structure.
 
       if (jsonStartIndex >= 0 && jsonEndIndex > jsonStartIndex) {
         const jsonString = response.substring(jsonStartIndex, jsonEndIndex);
-        const packingList = JSON.parse(jsonString);
 
-        // Merge the returned items with the master list to ensure we have all the properties
-        const enrichedItems: PackingItem[] = packingList.items.map(
-          (item: {
-            name: string;
-            quantity?: number;
-            weight: number;
-            essential?: boolean;
-            category?: string;
-            explanation: string;
-          }) => {
-            const masterItem = allItems.find(
-              (mi) => mi.name.toLowerCase() === item.name.toLowerCase()
+        // Attempt to repair potentially malformed JSON
+        let repairedJsonString = jsonString;
+        try {
+          // Try parsing the JSON as-is first
+          JSON.parse(jsonString);
+        } catch (parseError: unknown) {
+          console.log(
+            'Initial JSON parsing failed, attempting to repair the JSON'
+          );
+          // Check for common issues and attempt to repair
+          if (
+            jsonString.includes('"explanation": "') &&
+            parseError && typeof parseError === 'object' && 'message' in parseError &&
+            typeof (parseError as { message?: string }).message === 'string' &&
+            (parseError as { message: string }).message.includes('position')
+          ) {
+            // Find potentially incomplete explanation strings
+            const regex = /"explanation": "([^"]*?)(?:(?:",)|(?:"\s*}))/g;
+            repairedJsonString = jsonString.replace(regex, (match, p1) => {
+              // If the explanation ends abruptly, fix it
+              if (!match.endsWith('",') && !match.endsWith('"}')) {
+                return `"explanation": "${p1}",`;
+              }
+              return match;
+            });
+            // Ensure arrays are properly terminated
+            repairedJsonString = repairedJsonString.replace(/,\s*}\s*$/g, '}');
+            repairedJsonString = repairedJsonString.replace(/,\s*]\s*$/g, ']');
+            console.log('Attempted to repair JSON');
+          }
+        }
+        // Try parsing the repaired JSON
+        try {
+          const packingList = JSON.parse(repairedJsonString);
+          // Log the parsed packing list
+          console.log(
+            'Parsed packing list:',
+            JSON.stringify(
+              {
+                itemCount: packingList.items?.length || 0,
+                approximateWeight: packingList.approximateWeight,
+                suggestedTripName: packingList.suggestedTripName,
+              },
+              null,
+              2
+            )
+          );
+          // Calculate total weight to verify it matches the response
+          let totalWeightGrams = 0;
+          packingList.items.forEach((item: { weight?: number; quantity?: number }) => {
+            totalWeightGrams += (item.weight || 0) * (item.quantity || 1);
+          });
+          const totalWeightKg = totalWeightGrams / 1000;
+          console.log(
+            `Calculated total weight: ${totalWeightKg.toFixed(2)} kg (limit: ${maxWeight} kg)`
+          );
+          console.log(
+            `Weight utilization: ${((totalWeightKg / maxWeight) * 100).toFixed(1)}% of allowance`
+          );
+          // Check if model's approximateWeight matches our calculation
+          if (packingList.approximateWeight) {
+            console.log(`Model reported weight: ${packingList.approximateWeight}`);
+            console.log(`Actual calculated weight: ${totalWeightKg.toFixed(2)} kg`);
+            // Override the model's approximateWeight with our accurate calculation
+            packingList.approximateWeight = `${totalWeightKg.toFixed(2)} kg (${Math.round(
+              totalWeightGrams
+            )} grams, ${((totalWeightKg / maxWeight) * 100).toFixed(1)}% of ${maxWeight}kg limit)`;
+          }
+          // Verify weight limit compliance - just log a warning but don't trim anymore
+          if (totalWeightKg > maxWeight) {
+            console.warn(
+              `WARNING: Generated packing list exceeds weight limit of ${maxWeight} kg with ${totalWeightKg.toFixed(2)} kg.`
             );
-            if (!masterItem) {
-              console.warn(`Item not found in master list: ${item.name}`);
+          }
+          // Merge the returned items with the master list to ensure we have all the properties
+          const enrichedItems: PackingItem[] = packingList.items.map(
+            (item: {
+              name: string;
+              quantity?: number;
+              weight: number;
+              essential?: boolean;
+              category?: string;
+              explanation: string;
+            }) => {
+              const masterItem = allItems.find(
+                (mi) => mi.name.toLowerCase() === item.name.toLowerCase()
+              );
+              // Validate and potentially correct the weight value
+              const validatedWeight = validateItemWeight(
+                item.name,
+                item.category || '',
+                item.weight
+              );
+              if (validatedWeight !== item.weight) {
+                console.log(
+                  `Corrected weight for "${item.name}" from ${item.weight}g to ${validatedWeight}g`
+                );
+              }
+              if (!masterItem) {
+                console.warn(`Item not found in master list: ${item.name}`);
+                return {
+                  id: uuidv4(),
+                  name: item.name,
+                  quantity: item.quantity || 1,
+                  weight: validatedWeight,
+                  essential: item.essential || false,
+                  category: item.category,
+                  explanation: item.explanation,
+                  icon: 'Backpack', // Default icon if not found
+                };
+              }
               return {
                 id: uuidv4(),
                 name: item.name,
                 quantity: item.quantity || 1,
-                weight: item.weight,
+                weight: validatedWeight,
                 essential: item.essential || false,
-                category: item.category,
+                category: item.category || masterItem.category,
                 explanation: item.explanation,
-                icon: 'Backpack', // Default icon if not found
+                icon: masterItem.icon,
               };
             }
-
-            return {
-              id: uuidv4(),
-              name: item.name,
-              quantity: item.quantity || 1,
-              weight: item.weight,
-              essential: item.essential || false,
-              category: item.category || masterItem.category,
-              explanation: item.explanation,
-              icon: masterItem.icon,
-            };
-          }
-        );
-
-        return {
-          items: enrichedItems,
-          suggestedTripName: packingList.suggestedTripName,
-          weather: packingList.weather,
-          packingStrategy: packingList.packingStrategy,
-          approximateWeight: packingList.approximateWeight,
-        };
+          );
+          return {
+            items: enrichedItems,
+            suggestedTripName: packingList.suggestedTripName,
+            weather: packingList.weather,
+            packingStrategy: packingList.packingStrategy,
+            approximateWeight: packingList.approximateWeight,
+          };
+        } catch (parseError: unknown) {
+          console.error('Error parsing packing list JSON:', parseError, response);
+          return {
+            items: [],
+            error: `Failed to parse packing list data: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          };
+        }
       } else {
         throw new Error('Failed to extract JSON from response');
       }
-    } catch (parseError) {
-      console.error('Error parsing packing list JSON:', parseError, response);
+    } catch (error: unknown) {
+      console.error('Error generating packing list:', error);
       return {
         items: [],
-        error: `Failed to parse packing list data: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+        error: `Failed to generate packing list: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   } catch (error) {
@@ -266,4 +485,85 @@ function calculateDuration(startDate: string, endDate: string): number {
   const diffTime = Math.abs(end.getTime() - start.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays + 1; // Include both start and end days
+}
+
+/**
+ * Validates and normalizes item weights based on item type and category
+ * @param itemName Name of the item
+ * @param category Category of the item
+ * @param weight Weight provided by the model in grams
+ * @returns Validated weight in grams
+ */
+function validateItemWeight(itemName: string, category: string, weight: number): number {
+  // If weight is missing, NaN, negative, or unreasonably low, provide a default
+  if (!weight || isNaN(weight) || weight <= 0 || weight < 1) {
+    // Basic defaults by category
+    if (category.toLowerCase().includes('clothing')) return 200;
+    if (category.toLowerCase().includes('electronic')) return 300;
+    if (category.toLowerCase().includes('toiletries')) return 100;
+    return 150; // Generic default
+  }
+
+  // Check for unreasonably high weights (likely errors)
+  const nameLower = itemName.toLowerCase();
+
+  // Clothing items usually don't exceed 1000g except for heavy outerwear
+  if (category.toLowerCase().includes('clothing')) {
+    if (
+      (nameLower.includes('shirt') ||
+        nameLower.includes('t-shirt') ||
+        nameLower.includes('tshirt')) &&
+      weight > 500
+    ) {
+      return 200; // T-shirts are typically around 150-250g
+    }
+
+    if (nameLower.includes('sock') && weight > 200) {
+      return 80; // Socks are typically around 50-100g
+    }
+
+    if (nameLower.includes('underwear') && weight > 200) {
+      return 100; // Underwear is typically around 50-100g
+    }
+
+    if (nameLower.includes('jacket') && weight > 2000 && !nameLower.includes('winter')) {
+      return 800; // Regular jackets (not winter) are typically 600-1000g
+    }
+  }
+
+  // Electronics
+  if (category.toLowerCase().includes('electronic')) {
+    if (nameLower.includes('charger') && !nameLower.includes('laptop') && weight > 300) {
+      return 150; // Phone chargers are typically around 100-200g
+    }
+
+    if (nameLower.includes('adapter') && weight > 500) {
+      return 200; // Travel adapters are typically around 150-250g
+    }
+  }
+
+  // Toiletries
+  if (category.toLowerCase().includes('toiletries')) {
+    if (nameLower.includes('toothbrush') && weight > 100) {
+      return 50; // Toothbrushes are typically around 20-50g
+    }
+
+    if (nameLower.includes('toothpaste') && weight > 200) {
+      return 100; // Travel toothpaste is typically around 50-100g
+    }
+  }
+
+  // Accessories
+  if (nameLower.includes('wallet') && weight > 300) {
+    return 150; // Wallets are typically around 100-200g
+  }
+
+  // Generic limits for extreme outliers (preventing million gram items)
+  if (weight > 10000) {
+    // 10kg
+    return 5000; // Cap at 5kg for any single item
+  }
+
+  // If we got here, the weight is reasonable or we don't have specific rules for this item
+  return weight;
 }

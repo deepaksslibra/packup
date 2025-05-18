@@ -109,7 +109,7 @@ export default function PlacesAutocomplete({
         type="text"
         className={
           className ||
-          'w-full border border-gray-200 rounded-md px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-primary bg-white'
+          'w-full border border-gray-200 rounded-md px-3 py-2 h-11 mb-6 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-base'
         }
         placeholder="Enter your destination"
         value={inputValue}
@@ -122,11 +122,11 @@ export default function PlacesAutocomplete({
       />
 
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-auto">
+        <ul className="absolute z-10 w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-auto border border-gray-200">
           {suggestions.map((suggestion) => (
             <li
               key={suggestion.place_id}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              className="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
               onClick={() => handleSelectPlace(suggestion.place_id, suggestion.description)}
             >
               <div className="font-medium">{suggestion.structured_formatting.main_text}</div>
@@ -139,7 +139,7 @@ export default function PlacesAutocomplete({
       )}
 
       {isLoading && (
-        <div className="absolute right-3 top-3">
+        <div className="absolute right-3 top-3.5">
           <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent" />
         </div>
       )}

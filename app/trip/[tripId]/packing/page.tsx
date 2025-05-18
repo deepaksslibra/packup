@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripStore } from '@/store/tripStore';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Printer } from 'lucide-react';
+import { ArrowLeft, Printer, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { PackingItem } from '@/features/trip/types';
 import { cn } from '@/lib/utils';
@@ -30,6 +30,8 @@ export default function TripPackingPage() {
   // Filter state
   const [activeFilter, setActiveFilter] = useState<'all' | 'essential' | 'remaining'>('all');
   const [isClient, setIsClient] = useState(false);
+  // Track collapsed categories
+  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
   // Ensure client-side rendering for localStorage data
   useEffect(() => {
@@ -108,6 +110,14 @@ export default function TripPackingPage() {
   // Get item icon or default to Backpack icon
   const getItemIcon = (item: PackingItem) => {
     return item.icon || 'BackpackIcon';
+  };
+
+  // Toggle category collapse state
+  const toggleCategoryCollapse = (category: string) => {
+    setCollapsedCategories((prev) => ({
+      ...prev,
+      [category]: !prev[category],
+    }));
   };
 
   const generatePDF = async () => {
@@ -372,52 +382,73 @@ export default function TripPackingPage() {
         {/* Packing List */}
         <div className="space-y-5 md:space-y-6">
           {Object.entries(groupedItems).map(([category, items]) => (
-            <div key={category} className="space-y-2 md:space-y-3">
-              <h3 className="text-base md:text-lg font-medium flex items-center gap-1.5 md:gap-2 text-blue-600">
-                <IconRenderer
-                  icon={getCategoryIcon(category)}
-                  className="size-4 md:size-5 text-blue-600"
-                />
-                {category}
-              </h3>
-              <div>
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="py-2 md:py-3 border-b border-gray-100 flex items-center justify-between"
-                  >
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={item.id}
-                        checked={!!item.packed}
-                        onChange={() => toggleItemPacked(item.id)}
-                        className="h-5 w-5 md:h-5 md:w-5 rounded border-gray-300 mr-3"
-                      />
-                      <label
-                        htmlFor={item.id}
-                        className={cn(
-                          'text-sm md:text-base cursor-pointer flex items-center',
-                          item.packed ? 'line-through text-gray-400' : 'text-gray-800'
-                        )}
-                      >
-                        <IconRenderer
-                          icon={getItemIcon(item)}
-                          className="size-4 md:size-4 text-gray-600 mr-2"
-                        />
-                        <span>
-                          {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
-                        </span>
-                      </label>
-                    </div>
-                    {item.essential && (
-                      <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap ml-1">
-                        Essential
-                      </span>
+            <div
+              key={category}
+              className="space-y-2 md:space-y-3 bg-white shadow-sm border border-gray-100 rounded-lg overflow-hidden"
+            >
+              <div
+                className="p-3 md:p-4 flex items-center justify-between cursor-pointer border-b border-gray-100"
+                onClick={() => toggleCategoryCollapse(category)}
+              >
+                <h3 className="text-base md:text-lg font-medium flex items-center gap-1.5 md:gap-2 text-blue-600">
+                  <button className="text-gray-400 focus:outline-none">
+                    {collapsedCategories[category] ? (
+                      <ChevronDown className="h-4 w-4 md:h-5 md:w-5" />
+                    ) : (
+                      <ChevronUp className="h-4 w-4 md:h-5 md:w-5" />
                     )}
-                  </div>
-                ))}
+                  </button>
+                  <IconRenderer
+                    icon={getCategoryIcon(category)}
+                    className="size-4 md:size-5 text-blue-600"
+                  />
+                  {category}
+                </h3>
+                <div className="text-xs text-gray-500">
+                  {items.filter((item) => item.packed).length}/{items.length}
+                </div>
               </div>
+
+              {!collapsedCategories[category] && (
+                <div>
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="py-2 md:py-3 px-3 md:px-4 border-b border-gray-100 last:border-0 flex items-center justify-between"
+                    >
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={item.id}
+                          checked={!!item.packed}
+                          onChange={() => toggleItemPacked(item.id)}
+                          className="h-5 w-5 md:h-5 md:w-5 rounded border-gray-300 mr-3"
+                        />
+                        <label
+                          htmlFor={item.id}
+                          className={cn(
+                            'text-sm md:text-base cursor-pointer flex items-center',
+                            item.packed ? 'line-through text-gray-400' : 'text-gray-800'
+                          )}
+                        >
+                          <IconRenderer
+                            icon={getItemIcon(item)}
+                            className="size-4 md:size-4 text-gray-600 mr-2"
+                          />
+                          <span>
+                            {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
+                          </span>
+                        </label>
+                      </div>
+                      {item.essential && (
+                        <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap ml-1">
+                          Essential
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
 

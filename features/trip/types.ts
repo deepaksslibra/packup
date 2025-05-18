@@ -35,6 +35,11 @@ export interface TripDetailsForAI {
   transportation: string;
   travelParty: string[];
   additionalInfo?: string;
+  luggageConstraints?: {
+    maxTotalWeight?: number; // in kg
+    luggageType?: string[]; // e.g. ["Backpack", "Small Cabin Luggage", etc.]
+    weightDistribution?: string; // additional information about weight distribution
+  };
 }
 
 /**

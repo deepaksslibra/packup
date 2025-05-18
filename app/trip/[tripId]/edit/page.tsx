@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripStore } from '@/store/tripStore';
+import { useStepStore } from '@/store/stepStore';
 import { Button } from '@/components/ui/button';
-import { PlusIcon, PencilIcon, Save, MapPin, Calendar, Sun, Shirt } from 'lucide-react';
+import { PlusIcon, PencilIcon, Save, MapPin, Calendar, Sun, Shirt, ArrowLeft } from 'lucide-react';
 import { TripPackingList } from '@/app/trip/[tripId]/edit/_components/TripPackingList';
 import { AddItemDialog } from '@/app/trip/[tripId]/edit/_components/AddItemDialog';
 import { AddCategoryDialog } from '@/app/trip/[tripId]/edit/_components/AddCategoryDialog';
@@ -170,9 +171,15 @@ export default function TripEditPage() {
     setIsEditingTitle(false);
   };
 
+  const reset = useStepStore((state) => state.reset);
+
   const handleSaveTrip = () => {
     // Save trip to store
     updateTrip(trip);
+
+    // Reset the smart planning state when a trip is saved
+    reset();
+
     // Navigate to trips page
     router.push('/trips');
   };
@@ -220,41 +227,47 @@ export default function TripEditPage() {
     <div>
       {/* Mobile-optimized navbar with sticky positioning and responsive sizing */}
       <div className="border-b border-gray-200 mb-4 md:mb-6 px-4 md:px-6 py-3 md:py-4 sticky top-0 bg-white z-10">
-        <div className="flex justify-between items-center w-full max-w-[95%] mx-auto">
-          <div className="flex items-center gap-2 max-w-[70%] md:max-w-none">
+        <div className="flex justify-between items-center max-w-[100%] md:max-w-[95%] mx-auto">
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 md:h-10 md:w-10"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
+            </Button>
             {isEditingTitle ? (
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-2">
                 <Input
                   value={titleValue}
                   onChange={(e) => setTitleValue(e.target.value)}
-                  className="w-full md:w-64 text-sm md:text-base"
+                  className="w-full md:w-64 text-base font-medium"
                   autoFocus
                   onBlur={handleSaveTitle}
                   onKeyDown={(e) => e.key === 'Enter' && handleSaveTitle()}
                 />
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg md:text-xl font-semibold font-serif truncate">
-                  {trip.name}
-                </h1>
+              <h1 className="text-base md:text-xl font-semibold font-serif truncate max-w-[180px] md:max-w-none">
+                {trip.name}
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 flex-shrink-0"
+                  className="h-7 w-7 inline-flex ml-1 items-center justify-center"
                   onClick={() => setIsEditingTitle(true)}
                 >
                   <PencilIcon className="h-3.5 w-3.5" />
                 </Button>
-              </div>
+              </h1>
             )}
           </div>
 
-          <div className="flex">
+          <div>
             <Button
               variant="outline"
               size="sm"
-              className="text-xs md:text-sm flex items-center gap-1 h-8 md:h-9"
+              className="text-xs md:text-sm flex items-center gap-1.5 h-8 md:h-9 px-3 md:px-4 whitespace-nowrap"
               onClick={handleSaveTrip}
             >
               <Save className="h-3.5 w-3.5 md:h-4 md:w-4" />

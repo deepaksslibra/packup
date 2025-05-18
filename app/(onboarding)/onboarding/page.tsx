@@ -2,9 +2,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import type { FC } from 'react';
 import { useOnboardingStore } from '@/store/onboardingStore';
 import { useTripStore } from '@/store/tripStore';
+import { useStepStore } from '@/store/stepStore';
 import { Backpack, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-icons/react';
 
 /**
@@ -16,7 +18,13 @@ const OnboardingPage: FC = () => {
   const router = useRouter();
   const markOnboardingComplete = useOnboardingStore((state) => state.markOnboardingComplete);
   const trips = useTripStore((state) => state.trips);
+  const reset = useStepStore((state) => state.reset);
   const hasSavedTrips = trips.length > 0;
+
+  // Reset stepper state when landing on the onboarding page
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const handleNavigation = (path: string) => {
     markOnboardingComplete();
