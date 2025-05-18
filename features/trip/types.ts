@@ -6,6 +6,7 @@
  * @property {string} category - Category of the item (e.g., "Clothing").
  * @property {boolean} essential - Whether the item is marked as essential.
  * @property {string} icon - Lucide icon name for the item.
+ * @property {boolean} packed - Whether the item has been packed.
  */
 export interface PackingItem {
   id: string;
@@ -14,6 +15,7 @@ export interface PackingItem {
   category: string;
   essential: boolean;
   icon?: string;
+  packed?: boolean;
 }
 
 /**

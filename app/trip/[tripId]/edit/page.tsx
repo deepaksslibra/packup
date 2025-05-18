@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useTripStore } from '@/store/tripStore';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, PencilIcon, Save } from 'lucide-react';
@@ -35,6 +35,7 @@ const MOCK_TRIP: Trip = {
  */
 export default function TripEditPage() {
   const params = useParams();
+  const router = useRouter();
   const tripId = params.tripId as string;
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
@@ -68,9 +69,10 @@ export default function TripEditPage() {
   };
 
   const handleSaveTrip = () => {
-    // Save functionality here - currently trips are auto-saved to store
-    // This button provides visual feedback to users that their changes are being saved
+    // Save trip to store
     updateTrip(trip);
+    // Navigate to trips page
+    router.push('/trips');
   };
 
   // Format dates for display
@@ -116,7 +118,7 @@ export default function TripEditPage() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-semibold">{trip.name}</h1>
+                <h1 className="text-xl font-semibold font-serif">{trip.name}</h1>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -148,7 +150,7 @@ export default function TripEditPage() {
         {/* Location/Date and Add Item row */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            {trip.location && <h2 className="text-lg font-medium">{trip.location}</h2>}
+            {trip.location && <h2 className="text-lg font-medium font-serif">{trip.location}</h2>}
             {trip.startDate && trip.endDate && (
               <p className="text-sm text-gray-600">{formatDateRange()}</p>
             )}

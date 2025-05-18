@@ -1,6 +1,9 @@
 'use client';
 import type { FC } from 'react';
+import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 import { useStepStore } from '@/store/stepStore';
+import { useTripStore } from '@/store/tripStore';
 import {
   Stepper,
   StepperDescription,
@@ -30,15 +33,34 @@ const steps = [
 ];
 
 const SmartPlanningPage: FC = () => {
+  const router = useRouter();
   const currentStep = useStepStore((state) => state.currentStep);
   const answers = useStepStore((state) => state.answers);
   const setStep = useStepStore((state) => state.setStep);
   const setAnswers = useStepStore((state) => state.setAnswers);
   const reset = useStepStore((state) => state.reset);
+  const addTrip = useTripStore((state) => state.addTrip);
 
   // Handlers for navigation
   const goNext = () => {
-    if (currentStep < steps.length) setStep(currentStep + 1);
+    if (currentStep < steps.length) {
+      setStep(currentStep + 1);
+    } else {
+      // Last step completed, create a trip from the answers
+      const newTrip = {
+        id: uuidv4(),
+        name: `Trip to ${answers.destination}`,
+        createdAt: new Date().toISOString(),
+        location: answers.destination,
+        startDate: answers.dates.start,
+        endDate: answers.dates.end,
+        items: [], // Will be populated later with AI recommendations
+      };
+
+      addTrip(newTrip);
+      reset(); // Reset the questionnaire
+      router.push(`/trip/${newTrip.id}/edit`);
+    }
   };
   const goPrev = () => {
     if (currentStep > 1) setStep(currentStep - 1);

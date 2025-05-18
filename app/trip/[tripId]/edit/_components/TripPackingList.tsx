@@ -99,7 +99,7 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
               <span className="text-blue-500">
                 <IconRenderer icon={getCategoryIcon(category)} className="h-5 w-5" />
               </span>
-              <h2 className="text-lg font-medium">{category}</h2>
+              <h2 className="text-lg font-medium font-serif">{category}</h2>
             </div>
             <button className="text-gray-400 hover:text-gray-600">
               <MoreHorizontal className="h-5 w-5" />
