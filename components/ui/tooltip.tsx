@@ -49,10 +49,12 @@ function TooltipContent({
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className={cn(
-          'fill-current z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]',
-          className?.includes('bg-gradient') ? 'fill-purple-500' : 'bg-primary fill-primary'
-        )} />
+        <TooltipPrimitive.Arrow
+          className={cn(
+            'fill-current z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]',
+            className?.includes('bg-gradient') ? 'fill-purple-500' : 'bg-primary fill-primary'
+          )}
+        />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

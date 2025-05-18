@@ -201,7 +201,12 @@ export default function TripsPage() {
                       style={{ width: `${progressPercentage}%` }}
                     />
                   </div>
-                  <div className="text-right text-xs font-medium">{progressPercentage}%</div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">
+                      {trip.items.filter(item => item.packed).length}/{trip.items.length} items
+                    </span>
+                    <span className="text-right text-xs font-medium">{progressPercentage}%</span>
+                  </div>
                 </CardContent>
 
                 {/* Action buttons */}

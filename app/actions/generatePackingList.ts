@@ -1,9 +1,9 @@
-'use server'
+'use server';
 
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, Tool } from "@google/generative-ai";
-import { PACKING_MASTER_LIST } from "@/lib/packing-items";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold, Tool } from '@google/generative-ai';
+import { PACKING_MASTER_LIST } from '@/lib/packing-items';
 import { v4 as uuidv4 } from 'uuid';
-import { PackingItem } from "@/features/trip/types";
+import { PackingItem } from '@/features/trip/types';
 
 // Initialize the Gemini API with your API key
 const API_KEY = process.env.GEMINI_API_KEY || '';
@@ -51,32 +51,31 @@ export interface PackingListResponse {
  * @param tripDetails Details about the trip from the questionnaire
  * @returns A list of recommended packing items with explanations
  */
-export async function generatePackingList(
-  tripDetails: TripDetails
-): Promise<PackingListResponse> {
+export async function generatePackingList(tripDetails: TripDetails): Promise<PackingListResponse> {
   try {
     // Check if API key is available
     if (!API_KEY) {
       return {
         items: [],
-        error: 'Gemini API key is not configured. Please set the GEMINI_API_KEY environment variable.'
+        error:
+          'Gemini API key is not configured. Please set the GEMINI_API_KEY environment variable.',
       };
     }
 
     // Create a flat list of all items from the master list with their categories
-    const allItems = PACKING_MASTER_LIST.flatMap(category => 
-      category.items.map(item => ({
+    const allItems = PACKING_MASTER_LIST.flatMap((category) =>
+      category.items.map((item) => ({
         name: item.name,
         category: category.category,
         icon: item.icon || category.defaultIcon,
         essential: item.essential || false,
-        tags: item.tags || []
+        tags: item.tags || [],
       }))
     );
 
     // Get the generative model with web search capability
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash",
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash',
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
@@ -120,7 +119,7 @@ Write explanations in a conversational, personalized tone, addressing the travel
 Consider weather conditions, trip duration, activities, local customs, and travel requirements. Give great impetus to overall luggage weight and aim to recommend only what's truly necessary. Be conservative with quantities to keep total weight manageable.
 
 Here is the master list of items to choose from:
-${allItems.map(item => `- ${item.name} (Category: ${item.category})`).join('\n')}
+${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n')}
 
 Format your response as valid JSON with this structure:
 {
@@ -152,7 +151,7 @@ Do not include any explanatory text outside the JSON structure.
 
     // Define the Google Search tool
     const googleSearchTool = {
-        googleSearch: {}
+      googleSearch: {},
     } as Tool;
 
     // Generate content using Gemini with Google Search grounding, with retry logic
@@ -161,12 +160,12 @@ Do not include any explanatory text outside the JSON structure.
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
           const result = await model.generateContent({
-            contents: [{ role: "user", parts: [{ text: packingPrompt }] }],
+            contents: [{ role: 'user', parts: [{ text: packingPrompt }] }],
             generationConfig: {
               temperature: 0.2, // Lower temperature for more factual responses
               maxOutputTokens: 4096,
             },
-            tools: [googleSearchTool]
+            tools: [googleSearchTool],
           });
           return result.response.text();
         } catch (err) {
@@ -174,7 +173,7 @@ Do not include any explanatory text outside the JSON structure.
           console.error(`Gemini API attempt ${attempt + 1} failed:`, err);
           if (attempt < maxRetries) {
             // Add a short delay before retrying
-            await new Promise(res => setTimeout(res, 500));
+            await new Promise((res) => setTimeout(res, 500));
           }
         }
       }
@@ -182,58 +181,62 @@ Do not include any explanatory text outside the JSON structure.
     };
 
     const response = await fetchGeminiContentWithRetry(2);
-    
+
     try {
       // Parse the JSON response
       const jsonStartIndex = response.indexOf('{');
       const jsonEndIndex = response.lastIndexOf('}') + 1;
-      
+
       if (jsonStartIndex >= 0 && jsonEndIndex > jsonStartIndex) {
         const jsonString = response.substring(jsonStartIndex, jsonEndIndex);
         const packingList = JSON.parse(jsonString);
-        
+
         // Merge the returned items with the master list to ensure we have all the properties
-        const enrichedItems: PackingItem[] = packingList.items.map((item: {
-          name: string;
-          quantity?: number;
-          weight: number;
-          essential?: boolean;
-          category?: string;
-          explanation: string;
-        }) => {
-          const masterItem = allItems.find(mi => mi.name.toLowerCase() === item.name.toLowerCase());
-          if (!masterItem) {
-            console.warn(`Item not found in master list: ${item.name}`);
+        const enrichedItems: PackingItem[] = packingList.items.map(
+          (item: {
+            name: string;
+            quantity?: number;
+            weight: number;
+            essential?: boolean;
+            category?: string;
+            explanation: string;
+          }) => {
+            const masterItem = allItems.find(
+              (mi) => mi.name.toLowerCase() === item.name.toLowerCase()
+            );
+            if (!masterItem) {
+              console.warn(`Item not found in master list: ${item.name}`);
+              return {
+                id: uuidv4(),
+                name: item.name,
+                quantity: item.quantity || 1,
+                weight: item.weight,
+                essential: item.essential || false,
+                category: item.category,
+                explanation: item.explanation,
+                icon: 'Backpack', // Default icon if not found
+              };
+            }
+
             return {
               id: uuidv4(),
               name: item.name,
               quantity: item.quantity || 1,
               weight: item.weight,
               essential: item.essential || false,
-              category: item.category,
+              category: item.category || masterItem.category,
               explanation: item.explanation,
-              icon: 'Backpack', // Default icon if not found
+              icon: masterItem.icon,
             };
           }
-          
-          return {
-            id: uuidv4(),
-            name: item.name,
-            quantity: item.quantity || 1,
-            weight: item.weight,
-            essential: item.essential || false,
-            category: item.category || masterItem.category,
-            explanation: item.explanation,
-            icon: masterItem.icon,
-          };
-        });
+        );
 
         return {
           items: enrichedItems,
           suggestedTripName: packingList.suggestedTripName,
           weather: packingList.weather,
           packingStrategy: packingList.packingStrategy,
-          approximateWeight: packingList.approximateWeight
+          approximateWeight: packingList.approximateWeight,
         };
       } else {
         throw new Error('Failed to extract JSON from response');
@@ -242,14 +245,14 @@ Do not include any explanatory text outside the JSON structure.
       console.error('Error parsing packing list JSON:', parseError, response);
       return {
         items: [],
-        error: `Failed to parse packing list data: ${parseError instanceof Error ? parseError.message : String(parseError)}`
+        error: `Failed to parse packing list data: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
       };
     }
   } catch (error) {
     console.error('Error generating packing list:', error);
     return {
       items: [],
-      error: `Failed to generate packing list: ${error instanceof Error ? error.message : String(error)}`
+      error: `Failed to generate packing list: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }
@@ -263,4 +266,4 @@ function calculateDuration(startDate: string, endDate: string): number {
   const diffTime = Math.abs(end.getTime() - start.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays + 1; // Include both start and end days
-} 
+}

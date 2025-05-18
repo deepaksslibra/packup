@@ -1,14 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripStore } from '@/store/tripStore';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Printer } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { PackingItem } from '@/features/trip/types';
 import { cn } from '@/lib/utils';
 import { IconRenderer } from '@/components/ui/icon-picker';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import Image from 'next/image';
 
 /**
  * Packing page for a trip
@@ -17,6 +20,7 @@ export default function TripPackingPage() {
   const params = useParams();
   const router = useRouter();
   const tripId = params.tripId as string;
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Get trip details from store
   const trips = useTripStore((state) => state.trips);
@@ -106,6 +110,179 @@ export default function TripPackingPage() {
     return item.icon || 'BackpackIcon';
   };
 
+  const generatePDF = async () => {
+    if (!trip) return;
+    
+    try {
+      // Create PDF document
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      
+      // Set margins and column width
+      const margin = 20;
+      const columnWidth = (pageWidth - (margin * 3)) / 2; // Width of each column
+      const maxY = pageHeight - margin; // Maximum Y position before new page
+      
+      // Fixed starting positions to ensure alignment
+      const headerY = 20;
+      const contentStartY = 48; // Increased from 40 to add more space after title
+      let leftColumnY = contentStartY;
+      let rightColumnY = contentStartY;
+      const leftX = margin;
+      const rightX = margin * 2 + columnWidth;
+      
+      // Draw star (for essential items)
+      const drawStar = (x: number, y: number, size: number = 1.8): void => {
+        pdf.setDrawColor(200, 150, 0); // Dark yellow outline
+        pdf.setFillColor(255, 215, 0); // Gold fill
+        
+        // Calculate star points
+        const points = [];
+        const outerRadius = size;
+        const innerRadius = size / 2;
+        
+        for (let i = 0; i < 10; i++) {
+          const radius = i % 2 === 0 ? outerRadius : innerRadius;
+          // Fix orientation - start at top point
+          const angle = Math.PI * (i / 5 - 0.5);
+          const pointX = x + radius * Math.sin(angle);
+          const pointY = y + radius * Math.cos(angle);
+          points.push({ x: pointX, y: pointY });
+        }
+        
+        // Draw the star
+        pdf.setLineWidth(0.2);
+        pdf.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) {
+          pdf.lineTo(points[i].x, points[i].y);
+        }
+        pdf.lineTo(points[0].x, points[0].y);
+        pdf.fillStroke();
+      };
+      
+      // Header section - text only
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(16);
+      pdf.text("PackUp", margin, headerY + 5);
+      
+      // Add trip name with increased spacing
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      pdf.text(`${trip.name} - Packing List`, margin, headerY + 15);
+      
+      // Group items by category
+      const groupedItems: Record<string, PackingItem[]> = {};
+      trip.items.forEach(item => {
+        if (!groupedItems[item.category]) {
+          groupedItems[item.category] = [];
+        }
+        groupedItems[item.category].push(item);
+      });
+      
+      // Split categories into two columns - evenly distribute them
+      const categories = Object.entries(groupedItems);
+      const leftColumnCategories = categories.slice(0, Math.ceil(categories.length / 2));
+      const rightColumnCategories = categories.slice(Math.ceil(categories.length / 2));
+      
+      // Process left column categories
+      leftColumnCategories.forEach(([category, items]) => {
+        // Category header
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(12);
+        pdf.text(category, leftX, leftColumnY);
+        leftColumnY += 8;
+        
+        // Process items in this category
+        items.forEach(item => {
+          // Check for page overflow
+          if (leftColumnY > maxY - 10) {
+            // Move to new page
+            pdf.addPage();
+            leftColumnY = 20;
+            rightColumnY = 20;
+          }
+          
+          // Draw checkbox
+          pdf.setDrawColor(150, 150, 150);
+          pdf.rect(leftX, leftColumnY - 4, 5, 5);
+          
+          // Item name
+          pdf.setFont("helvetica", "normal");
+          pdf.setFontSize(10);
+          let itemText = item.name;
+          if (item.quantity > 1) {
+            itemText += ` (${item.quantity})`;
+          }
+          
+          // Add item text
+          pdf.text(itemText, leftX + 10, leftColumnY);
+          
+          // Add star if essential (smaller size)
+          if (item.essential) {
+            const textWidth = pdf.getTextWidth(itemText);
+            drawStar(leftX + 13 + textWidth, leftColumnY - 1.5, 1.8);
+          }
+          
+          leftColumnY += 8;
+        });
+        
+        leftColumnY += 8; // Increased spacing between categories (was 5)
+      });
+      
+      // Process right column categories
+      rightColumnCategories.forEach(([category, items]) => {
+        // Category header
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(12);
+        pdf.text(category, rightX, rightColumnY);
+        rightColumnY += 8;
+        
+        // Process items in this category
+        items.forEach(item => {
+          // Check for page overflow
+          if (rightColumnY > maxY - 10) {
+            // Move to new page
+            pdf.addPage();
+            leftColumnY = 20;
+            rightColumnY = 20;
+          }
+          
+          // Draw checkbox
+          pdf.setDrawColor(150, 150, 150);
+          pdf.rect(rightX, rightColumnY - 4, 5, 5);
+          
+          // Item name
+          pdf.setFont("helvetica", "normal");
+          pdf.setFontSize(10);
+          let itemText = item.name;
+          if (item.quantity > 1) {
+            itemText += ` (${item.quantity})`;
+          }
+          
+          // Add item text
+          pdf.text(itemText, rightX + 10, rightColumnY);
+          
+          // Add star if essential (smaller size)
+          if (item.essential) {
+            const textWidth = pdf.getTextWidth(itemText);
+            drawStar(rightX + 13 + textWidth, rightColumnY - 1.5, 1.8);
+          }
+          
+          rightColumnY += 8;
+        });
+        
+        rightColumnY += 8; // Increased spacing between categories (was 5)
+      });
+      
+      // Save PDF
+      pdf.save(`${trip.name}_packing_list.pdf`);
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
   return (
     <div>
       {/* Navbar with bottom border */}
@@ -117,11 +294,21 @@ export default function TripPackingPage() {
             </Button>
             <h1 className="text-xl font-semibold font-serif">{trip.name}</h1>
           </div>
+          <div>
+            <Button 
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={generatePDF}
+            >
+              <Printer className="h-4 w-4" />
+              Print List
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Main content area */}
-      <div className="max-w-3xl mx-auto px-4 py-4">
+      <div className="max-w-3xl mx-auto px-4 py-4" ref={contentRef}>
         {/* Packing Progress */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">

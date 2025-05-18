@@ -76,7 +76,7 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
       </div>
     );
   }
-  
+
   // If items are being loaded, component won't be rendered as the parent component shows a loading state
 
   const handleDeleteItem = (itemId: string) => {
@@ -219,9 +219,9 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <Info 
-                              size={18} 
-                              weight="bold" 
+                            <Info
+                              size={18}
+                              weight="bold"
                               color="#9177C7"
                               className="ml-0.5 hover:opacity-80 transition-opacity"
                             />

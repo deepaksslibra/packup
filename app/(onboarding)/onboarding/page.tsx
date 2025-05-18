@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { useOnboardingStore } from '@/store/onboardingStore';
+import { useTripStore } from '@/store/tripStore';
 import { Backpack, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-icons/react';
 
 /**
@@ -14,6 +15,8 @@ import { Backpack, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-i
 const OnboardingPage: FC = () => {
   const router = useRouter();
   const markOnboardingComplete = useOnboardingStore((state) => state.markOnboardingComplete);
+  const trips = useTripStore((state) => state.trips);
+  const hasSavedTrips = trips.length > 0;
 
   const handleNavigation = (path: string) => {
     markOnboardingComplete();
@@ -112,6 +115,17 @@ const OnboardingPage: FC = () => {
               </CardContent>
             </Card>
           </div>
+          
+          {hasSavedTrips && (
+            <div className="mt-6 text-center">
+              <button 
+                onClick={() => router.push('/trips')} 
+                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                Go back to your saved trips
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
