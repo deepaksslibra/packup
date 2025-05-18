@@ -2,10 +2,16 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  swcMinify: true,
-  output: 'export', // Use static export for better compatibility
+  // swcMinify is not recognized in new Next.js versions
+  // swcMinify: true,
+  
+  // Instead of static export, use a regular server build
+  // output: 'export', 
+  
   images: {
-    unoptimized: true, // Required for static export
+    domains: ['localhost'], // Add any other image domains you need
+    // Remove unoptimized since we're not using static export
+    // unoptimized: true,
   },
   typescript: {
     // Ignore TypeScript errors for build (we'll still see them in development)

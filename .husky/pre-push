@@ -1,14 +1,23 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run linting but don't fail the push if there are warnings
+# Run linting but continue even if there are warnings
 echo "Running linting checks..."
 npm run lint || true
 npx prettier --check . || true
 
-# Skip the build step that's causing failures
-echo "Build step skipped. Run 'npm run build' manually if needed."
+# Run the build process
+echo "Running build process..."
+npm run build
 
-# Success message
-echo "✓ Pre-push checks completed (with warnings allowed)"
+# Check the exit status of the build
+BUILD_STATUS=$?
+if [ $BUILD_STATUS -ne 0 ]; then
+  echo "⚠️ Build failed with exit code $BUILD_STATUS"
+  echo "Review the errors above and fix them before pushing."
+  exit 1
+fi
+
+# Success message if build passes
+echo "✓ Pre-push checks completed successfully - build passed!"
 exit 0 
