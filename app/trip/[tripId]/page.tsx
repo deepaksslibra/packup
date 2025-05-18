@@ -1,14 +1,11 @@
-'use client';
-
-import { useParams } from 'next/navigation';
-import TripEditor from './_components/TripEditor';
+import { redirect } from 'next/navigation';
 
 /**
- * Trip Editing Page that gets the tripId from the URL params
+ * Main Trip Page - redirects to the edit view by default
  */
-export default function TripEditingPage() {
-  const params = useParams();
-  const tripId = params.tripId as string;
-
-  return <TripEditor tripId={tripId} />;
+export default function TripPage({ params }: { params: { tripId: string } }) {
+  const { tripId } = params;
+  
+  // Redirect to the edit page by default
+  redirect(`/trip/${tripId}/edit`);
 }
