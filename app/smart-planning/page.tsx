@@ -61,26 +61,57 @@ const SmartPlanningPage: FC = () => {
   const setAnswers = useStepStore((state) => state.setAnswers);
   const reset = useStepStore((state) => state.reset);
   const addTrip = useTripStore((state) => state.addTrip);
+  const updateTrip = useTripStore((state) => state.updateTrip);
+  const [isFinishing, setIsFinishing] = useState(false);
 
   // Handlers for navigation
-  const goNext = () => {
+  const goNext = async () => {
     if (currentStep < steps.length) {
       setStep(currentStep + 1);
     } else {
+      // Show loading state in the button
+      setIsFinishing(true);
+      
       // Last step completed, create a trip from the answers
+      const tripId = uuidv4();
+      
+      // Format trip details for the AI
+      const tripDetails = {
+        destination: answers.destination,
+        startDate: answers.dates.start,
+        endDate: answers.dates.end,
+        tripPurpose: answers.tripType,
+        activities: [
+          ...answers.activities,
+          ...(answers.customActivity ? [answers.customActivity] : [])
+        ],
+        accommodation: "Not specified", // Could add this to the questionnaire
+        transportation: "Not specified", // Could add this to the questionnaire
+        travelParty: [answers.gender],
+        additionalInfo: answers.specialNeeds,
+      };
+      
+      // Create initial trip object
       const newTrip = {
-        id: uuidv4(),
+        id: tripId,
         name: `Trip to ${answers.destination}`,
         createdAt: new Date().toISOString(),
         location: answers.destination,
         startDate: answers.dates.start,
         endDate: answers.dates.end,
-        items: [], // Will be populated later with AI recommendations
+        items: [], // Will be populated by AI recommendations
+        isLoadingItems: true, // Flag to indicate items are being loaded
+        aiTripDetails: tripDetails, // Store the trip details for AI processing
       };
 
+      // Add trip to store
       addTrip(newTrip);
-      reset(); // Reset the questionnaire
-      router.push(`/trip/${newTrip.id}/edit`);
+      
+      // Navigate to the edit screen immediately
+      router.push(`/trip/${tripId}/edit`);
+      
+      // Reset the questionnaire after navigation has started
+      reset();
     }
   };
   const goPrev = () => {
@@ -481,11 +512,25 @@ const SmartPlanningPage: FC = () => {
             </>
           )}
           <div className="flex justify-between w-full mt-auto absolute left-0 bottom-0 px-0 pb-0">
-            <Button variant="ghost" onClick={goPrev} disabled={currentStep === 1}>
+            <Button variant="ghost" onClick={goPrev} disabled={currentStep === 1 || isFinishing}>
               Previous Step
             </Button>
-            <Button onClick={goNext} disabled={isNextDisabled()}>
-              {currentStep === steps.length ? 'Finish' : 'Next'}
+            <Button 
+              onClick={goNext} 
+              disabled={isNextDisabled() || isFinishing}
+              className={isFinishing ? "opacity-80" : ""}
+            >
+              {isFinishing ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating Trip...
+                </span>
+              ) : (
+                currentStep === steps.length ? 'Finish' : 'Next'
+              )}
             </Button>
           </div>
         </div>

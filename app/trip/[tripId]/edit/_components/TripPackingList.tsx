@@ -5,7 +5,7 @@ import { useTripStore } from '@/store/tripStore';
 import { PackingItem } from '@/features/trip/types';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, Pencil, Trash2 } from 'lucide-react';
-import { Broom } from '@phosphor-icons/react';
+import { Broom, Info } from '@phosphor-icons/react';
 import { AddItemDialog } from './AddItemDialog';
 import { EditItemDialog } from './EditItemDialog';
 import { EditCategoryDialog } from './EditCategoryDialog';
@@ -76,6 +76,8 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
       </div>
     );
   }
+  
+  // If items are being loaded, component won't be rendered as the parent component shows a loading state
 
   const handleDeleteItem = (itemId: string) => {
     if (!trip) return;
@@ -200,7 +202,7 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                 onMouseLeave={() => setHoveredItem(null)}
               >
                 <div className="text-gray-500 mr-3">
-                  <IconRenderer icon={item.icon || 'File'} className="h-5 w-5" />
+                  <IconRenderer icon={item.icon || 'Backpack'} className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -212,6 +214,23 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                       <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200">
                         Essential
                       </span>
+                    )}
+                    {item.explanation && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info 
+                              size={18} 
+                              weight="bold" 
+                              color="#9177C7"
+                              className="ml-0.5 hover:opacity-80 transition-opacity"
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            <p className="text-sm">{item.explanation}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     )}
                   </div>
                 </div>

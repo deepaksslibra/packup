@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { useOnboardingStore } from '@/store/onboardingStore';
-import { Suitcase, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-icons/react';
+import { Backpack, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-icons/react';
 
 /**
  * Onboarding page for the AI-Powered Packing Checklist app (PackUp).
@@ -26,10 +26,8 @@ const OnboardingPage: FC = () => {
       <div className="w-full md:w-1/2 bg-blue-600 flex flex-col justify-center items-center p-8 text-white">
         <div className="flex flex-col gap-6 max-w-xs w-full">
           <div className="flex items-center gap-2">
-            <div className="bg-white bg-opacity-20 rounded-full p-2">
-              {/* Suitcase icon */}
-              <Suitcase size={24} weight="fill" aria-label="Suitcase" />
-            </div>
+            {/* Backpack icon */}
+            <Backpack size={24} weight="fill" aria-label="Backpack" className="text-white" />
             <span className="font-semibold text-lg tracking-wide">PackUp</span>
           </div>
           <h1 className="font-serif text-3xl font-bold leading-tight">

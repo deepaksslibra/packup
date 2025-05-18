@@ -96,8 +96,9 @@ export const IconRenderer = ({ icon, weight = 'duotone', ...rest }: IconRenderer
     icon as keyof typeof PhosphorIcons
   ] as React.ComponentType<IconProps>;
 
+  // If icon doesn't exist, use Backpack as fallback
   if (!IconComponent) {
-    return null;
+    return <PhosphorIcons.BackpackIcon data-slot="icon" weight={weight} {...rest} />;
   }
 
   return <IconComponent data-slot="icon" weight={weight} {...rest} />;

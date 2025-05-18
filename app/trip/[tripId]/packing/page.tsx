@@ -101,9 +101,9 @@ export default function TripPackingPage() {
     return getDefaultCategoryIcon(category);
   };
 
-  // Get item icon or default to a generic icon
+  // Get item icon or default to Backpack icon
   const getItemIcon = (item: PackingItem) => {
-    return item.icon || 'PackageIcon';
+    return item.icon || 'BackpackIcon';
   };
 
   return (

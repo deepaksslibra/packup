@@ -164,11 +164,11 @@ export default function TripsPage() {
               <Card key={trip.id} className="flex flex-col border shadow-sm">
                 {/* Title and dropdown menu */}
                 <CardHeader className="pb-0 pt-2 px-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle className="truncate text-lg">{trip.name}</CardTitle>
+                  <div className="flex justify-between items-start">
+                    <div className="w-[85%]">
+                      <CardTitle className="text-lg break-words">{trip.name}</CardTitle>
                       {trip.startDate && trip.endDate && (
-                        <p className="text-xs text-gray-500 absolute">
+                        <p className="text-xs text-gray-500">
                           {formatDateRange(trip.startDate, trip.endDate)}
                         </p>
                       )}
