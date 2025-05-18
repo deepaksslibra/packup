@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTripStore } from '@/store/tripStore';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { PackingItem } from '@/features/trip/types';
 import { cn } from '@/lib/utils';
+import { IconRenderer } from '@/components/ui/icon-picker';
 
 /**
  * Packing page for a trip
@@ -78,6 +79,33 @@ export default function TripPackingPage() {
     {} as Record<string, PackingItem[]>
   );
 
+  // Default icon per category if not specified in trip.categoryIcons
+  const getDefaultCategoryIcon = (category: string) => {
+    // Default icons based on common categories
+    if (category === 'Clothing') return 'TShirtIcon';
+    if (category === 'Toiletries') return 'DropIcon';
+    if (category === 'Electronics') return 'LightningIcon';
+    if (category === 'Documents') return 'FileTextIcon';
+    if (category === 'Accessories') return 'SunglassesIcon';
+    if (category === 'First Aid') return 'FirstAidKitIcon';
+    if (category === 'Gear') return 'BackpackIcon';
+
+    return 'FolderIcon';
+  };
+
+  // Get category icon
+  const getCategoryIcon = (category: string) => {
+    if (trip.categoryIcons && trip.categoryIcons[category]) {
+      return trip.categoryIcons[category];
+    }
+    return getDefaultCategoryIcon(category);
+  };
+
+  // Get item icon or default to a generic icon
+  const getItemIcon = (item: PackingItem) => {
+    return item.icon || 'PackageIcon';
+  };
+
   return (
     <div>
       {/* Navbar with bottom border */}
@@ -141,7 +169,10 @@ export default function TripPackingPage() {
         <div className="space-y-6">
           {Object.entries(groupedItems).map(([category, items]) => (
             <div key={category} className="space-y-2">
-              <h3 className="text-lg font-medium">{category}</h3>
+              <h3 className="text-lg font-medium flex items-center gap-2">
+                <IconRenderer icon={getCategoryIcon(category)} className="size-5 text-blue-500" />
+                {category}
+              </h3>
               <div className="space-y-1">
                 {items.map((item) => (
                   <div
@@ -159,15 +190,18 @@ export default function TripPackingPage() {
                       <label
                         htmlFor={item.id}
                         className={cn(
-                          'font-medium cursor-pointer',
+                          'font-medium cursor-pointer flex items-center gap-2',
                           item.packed ? 'line-through text-gray-400' : ''
                         )}
                       >
+                        <IconRenderer icon={getItemIcon(item)} className="size-4 text-gray-500" />
                         {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
                       </label>
                     </div>
                     {item.essential && (
-                      <span className="text-sm font-medium text-gray-600">Essential</span>
+                      <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200">
+                        Essential
+                      </span>
                     )}
                   </div>
                 ))}
