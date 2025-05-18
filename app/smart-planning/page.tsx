@@ -314,7 +314,7 @@ const SmartPlanningPage: FC = () => {
             >
               <ArrowLeft size={24} weight="bold" />
             </Button>
-            
+
             <div
               className="flex items-center cursor-pointer"
               onClick={() => setShowStepperOnMobile(!showStepperOnMobile)}
@@ -325,7 +325,7 @@ const SmartPlanningPage: FC = () => {
               {showStepperOnMobile ? <CaretUp size={20} /> : <CaretDown size={20} />}
             </div>
           </div>
-          
+
           <h2 className="text-xl font-bold font-serif">Smart Planning</h2>
 
           {/* Mobile step title and description */}
@@ -467,7 +467,9 @@ const SmartPlanningPage: FC = () => {
                       className="w-full border border-gray-200 rounded-md px-3 py-2 h-11 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-base"
                       value={answers.dates.start}
                       onChange={handleDateChange}
-                      min={new Date().toISOString().split('T')[0]} /* Today's date in YYYY-MM-DD format */
+                      min={
+                        new Date().toISOString().split('T')[0]
+                      } /* Today's date in YYYY-MM-DD format */
                     />
                   </div>
                   <div className="flex-1">
@@ -481,7 +483,9 @@ const SmartPlanningPage: FC = () => {
                       className="w-full border border-gray-200 rounded-md px-3 py-2 h-11 focus:outline-none focus:ring-2 focus:ring-primary bg-white text-base"
                       value={answers.dates.end}
                       onChange={handleDateChange}
-                      min={answers.dates.start || new Date().toISOString().split('T')[0]} /* Must be on or after start date */
+                      min={
+                        answers.dates.start || new Date().toISOString().split('T')[0]
+                      } /* Must be on or after start date */
                     />
                   </div>
                 </div>
@@ -644,7 +648,8 @@ const SmartPlanningPage: FC = () => {
                 Previous
               </Button>
             )}
-            {currentStep === 1 && <div></div>} {/* Empty div to maintain layout when button is hidden */}
+            {currentStep === 1 && <div />}{' '}
+            {/* Empty div to maintain layout when button is hidden */}
             <Button
               onClick={currentStep === steps.length ? saveTrip : goNext}
               disabled={isNextDisabled() || isFinishing}
