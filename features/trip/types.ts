@@ -35,5 +35,5 @@ export interface Trip {
   startDate?: string;
   endDate?: string;
   items: PackingItem[];
-  categoryIcons?: {[category: string]: string};
+  categoryIcons?: { [category: string]: string };
 }

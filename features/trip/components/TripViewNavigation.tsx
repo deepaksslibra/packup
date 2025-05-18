@@ -11,28 +11,22 @@ export default function TripViewNavigation() {
   const params = useParams();
   const pathname = usePathname();
   const tripId = params.tripId as string;
-  
+
   const isEditPage = pathname.includes('/edit');
   const isPackingPage = pathname.includes('/packing');
 
   return (
     <div className="flex space-x-2 mb-4">
       <Link href={`/trip/${tripId}/edit`} passHref>
-        <Button 
-          variant={isEditPage ? "default" : "outline"}
-          className="w-24"
-        >
+        <Button variant={isEditPage ? 'default' : 'outline'} className="w-24">
           Edit
         </Button>
       </Link>
       <Link href={`/trip/${tripId}/packing`} passHref>
-        <Button 
-          variant={isPackingPage ? "default" : "outline"}
-          className="w-24"
-        >
+        <Button variant={isPackingPage ? 'default' : 'outline'} className="w-24">
           Packing
         </Button>
       </Link>
     </div>
   );
-} 
+}
