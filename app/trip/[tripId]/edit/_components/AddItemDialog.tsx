@@ -4,19 +4,18 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useTripStore } from '@/store/tripStore';
 import { PackingItem } from '@/features/trip/types';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { IconPicker } from '@/components/ui/icon-picker';
-import { Package } from 'lucide-react';
-import { IconName } from 'lucide-react/dynamic';
+import { IconPickerDialog } from '@/components/ui/icon-picker-dialog';
+import { IconRenderer } from '@/components/ui/icon-picker';
 
 interface AddItemDialogProps {
   isOpen: boolean;
@@ -25,27 +24,22 @@ interface AddItemDialogProps {
   defaultCategory?: string;
 }
 
-export function AddItemDialog({ 
-  isOpen, 
-  onClose, 
-  tripId,
-  defaultCategory 
-}: AddItemDialogProps) {
+export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddItemDialogProps) {
   const [name, setName] = useState('');
   const [category, setCategory] = useState(defaultCategory || '');
   const [quantity, setQuantity] = useState(1);
   const [essential, setEssential] = useState(false);
-  const [icon, setIcon] = useState<IconName>('package');
-  
-  const updateTrip = useTripStore(state => state.updateTrip);
-  const trips = useTripStore(state => state.trips);
-  const trip = trips.find(t => t.id === tripId);
+  const [icon, setIcon] = useState<string>('SquareStack');
+
+  const updateTrip = useTripStore((state) => state.updateTrip);
+  const trips = useTripStore((state) => state.trips);
+  const trip = trips.find((t) => t.id === tripId);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!trip) return;
-    
+
     // Create a new item
     const newItem: PackingItem = {
       id: crypto.randomUUID(),
@@ -53,27 +47,27 @@ export function AddItemDialog({
       category,
       quantity,
       essential,
-      icon
+      icon,
     };
-    
+
     // Update the trip with the new item
     updateTrip({
       ...trip,
-      items: [...trip.items, newItem]
+      items: [...trip.items, newItem],
     });
-    
+
     // Reset form and close dialog
     setName('');
     setCategory(defaultCategory || '');
     setQuantity(1);
     setEssential(false);
-    setIcon('package');
+    setIcon('SquareStack');
     onClose();
   };
 
   // Get unique categories from trip items for dropdown suggestions
-  const existingCategories = trip 
-    ? Array.from(new Set(trip.items.map(item => item.category)))
+  const existingCategories = trip
+    ? Array.from(new Set(trip.items.map((item) => item.category)))
     : [];
 
   return (
@@ -82,7 +76,7 @@ export function AddItemDialog({
         <DialogHeader>
           <DialogTitle>Add New Item</DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="grid grid-cols-[1fr_auto] gap-4">
             <div className="space-y-2">
@@ -98,14 +92,10 @@ export function AddItemDialog({
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Icon</Label>
-              <IconPicker 
-                value={icon} 
-                onValueChange={setIcon}
-                triggerPlaceholder="Select icon"
-              />
+              <IconPickerDialog onSelect={setIcon} initialValue={icon} />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
             <Input
@@ -125,7 +115,7 @@ export function AddItemDialog({
               </datalist>
             )}
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="quantity">Quantity</Label>
             <Input
@@ -133,27 +123,26 @@ export function AddItemDialog({
               type="number"
               min="1"
               value={quantity}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuantity(parseInt(e.target.value))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setQuantity(parseInt(e.target.value))
+              }
               className="focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
-          
+
           <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="essential" 
+            <Checkbox
+              id="essential"
               checked={essential}
               onCheckedChange={(checked: boolean) => setEssential(checked)}
               className="data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
             />
-            <Label 
-              htmlFor="essential" 
-              className="text-sm font-normal cursor-pointer"
-            >
+            <Label htmlFor="essential" className="text-sm font-normal cursor-pointer">
               Mark as essential
             </Label>
           </div>
-          
+
           <DialogFooter className="pt-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -166,4 +155,4 @@ export function AddItemDialog({
       </DialogContent>
     </Dialog>
   );
-} 
+}

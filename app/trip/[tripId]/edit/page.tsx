@@ -13,21 +13,21 @@ import { Input } from '@/components/ui/input';
 
 // Mock data for development and preview
 const MOCK_TRIP: Trip = {
-  id: "mock-trip-1",
-  name: "Mountain Adventure",
+  id: 'mock-trip-1',
+  name: 'Mountain Adventure',
   createdAt: new Date().toISOString(),
-  location: "Paris, France",
-  startDate: "2025-06-01",
-  endDate: "2025-06-07",
+  location: 'Paris, France',
+  startDate: '2025-06-01',
+  endDate: '2025-06-07',
   items: [
-    { id: "item-1", name: "T-shirts", category: "Clothing", quantity: 5, essential: false },
-    { id: "item-2", name: "Pants", category: "Clothing", quantity: 2, essential: true },
-    { id: "item-3", name: "Underwear", category: "Clothing", quantity: 7, essential: true },
-    { id: "item-4", name: "Socks", category: "Clothing", quantity: 7, essential: true },
-    { id: "item-5", name: "Light jacket", category: "Clothing", quantity: 1, essential: true },
-    { id: "item-6", name: "Toothbrush", category: "Toiletries", quantity: 1, essential: true },
-    { id: "item-7", name: "Toothpaste", category: "Toiletries", quantity: 1, essential: true },
-  ]
+    { id: 'item-1', name: 'T-shirts', category: 'Clothing', quantity: 5, essential: false },
+    { id: 'item-2', name: 'Pants', category: 'Clothing', quantity: 2, essential: true },
+    { id: 'item-3', name: 'Underwear', category: 'Clothing', quantity: 7, essential: true },
+    { id: 'item-4', name: 'Socks', category: 'Clothing', quantity: 7, essential: true },
+    { id: 'item-5', name: 'Light jacket', category: 'Clothing', quantity: 1, essential: true },
+    { id: 'item-6', name: 'Toothbrush', category: 'Toiletries', quantity: 1, essential: true },
+    { id: 'item-7', name: 'Toothpaste', category: 'Toiletries', quantity: 1, essential: true },
+  ],
 };
 
 /**
@@ -40,15 +40,15 @@ export default function TripEditPage() {
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState('');
-  
+
   // Get trip details from store
   const trips = useTripStore((state) => state.trips);
   const updateTrip = useTripStore((state) => state.updateTrip);
-  const storeTrip = trips.find(t => t.id === tripId);
-  
+  const storeTrip = trips.find((t) => t.id === tripId);
+
   // Use mock data if no trip is found
   const trip = storeTrip || MOCK_TRIP;
-  
+
   // Add mock trip to store if needed (for development)
   useEffect(() => {
     if (!storeTrip) {
@@ -61,7 +61,7 @@ export default function TripEditPage() {
     if (titleValue.trim() !== '') {
       updateTrip({
         ...trip,
-        name: titleValue
+        name: titleValue,
       });
     }
     setIsEditingTitle(false);
@@ -76,16 +76,19 @@ export default function TripEditPage() {
   // Format dates for display
   const formatDateRange = () => {
     if (!trip.startDate || !trip.endDate) return '';
-    
+
     const startDate = new Date(trip.startDate);
     const endDate = new Date(trip.endDate);
-    
+
     // If dates are invalid, return empty string
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return '';
-    
+
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    
-    if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+
+    if (
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getFullYear() === endDate.getFullYear()
+    ) {
       // Same month and year: "June 1-7, 2025"
       return `${startDate.toLocaleDateString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
     } else {
@@ -114,10 +117,10 @@ export default function TripEditPage() {
             ) : (
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-semibold">{trip.name}</h1>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6" 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
                   onClick={() => setIsEditingTitle(true)}
                 >
                   <PencilIcon className="h-3.5 w-3.5" />
@@ -125,12 +128,12 @@ export default function TripEditPage() {
               </div>
             )}
           </div>
-          
+
           <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-sm flex items-center gap-1" 
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-sm flex items-center gap-1"
               onClick={handleSaveTrip}
             >
               <Save className="h-4 w-4" />
@@ -139,33 +142,31 @@ export default function TripEditPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Main content area - narrower than navbar */}
       <div className="max-w-3xl mx-auto px-4">
         {/* Location/Date and Add Item row */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            {trip.location && (
-              <h2 className="text-lg font-medium">{trip.location}</h2>
-            )}
+            {trip.location && <h2 className="text-lg font-medium">{trip.location}</h2>}
             {trip.startDate && trip.endDate && (
               <p className="text-sm text-gray-600">{formatDateRange()}</p>
             )}
           </div>
-          <Button 
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white" 
+          <Button
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
             onClick={() => setIsAddItemOpen(true)}
           >
             <PlusIcon className="h-4 w-4" />
             Add Item
           </Button>
         </div>
-        
+
         <TripPackingList tripId={tripId} />
-        
+
         <div className="mt-8 flex justify-center">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="flex items-center gap-2 rounded-full px-6 border-dashed"
             onClick={() => setIsAddCategoryOpen(true)}
           >
@@ -174,10 +175,10 @@ export default function TripEditPage() {
           </Button>
         </div>
 
-        <AddItemDialog 
-          isOpen={isAddItemOpen} 
-          onClose={() => setIsAddItemOpen(false)} 
-          tripId={tripId} 
+        <AddItemDialog
+          isOpen={isAddItemOpen}
+          onClose={() => setIsAddItemOpen(false)}
+          tripId={tripId}
         />
 
         <AddCategoryDialog
@@ -188,4 +189,4 @@ export default function TripEditPage() {
       </div>
     </div>
   );
-} 
+}

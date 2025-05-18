@@ -30,35 +30,36 @@ export default function PackingList({ tripId }: { tripId: string }) {
   const [items, setItems] = useState<PackingItem[]>(MOCK_ITEMS);
 
   // Group items by category
-  const itemsByCategory = items.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, PackingItem[]>);
+  const itemsByCategory = items.reduce(
+    (acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    },
+    {} as Record<string, PackingItem[]>
+  );
 
   const togglePacked = (itemId: string) => {
-    setItems(items.map(item => 
-      item.id === itemId 
-        ? { ...item, isPacked: !item.isPacked } 
-        : item
-    ));
+    setItems(
+      items.map((item) => (item.id === itemId ? { ...item, isPacked: !item.isPacked } : item))
+    );
     // In a real implementation, this would update the store or call an API
   };
 
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-medium">Packing List</h2>
-      
+
       {Object.entries(itemsByCategory).map(([category, categoryItems]) => (
         <div key={category} className="space-y-2">
           <h3 className="text-md font-medium text-gray-600">{category}</h3>
-          
+
           <div className="space-y-2">
             {categoryItems.map((item) => (
-              <Card 
-                key={item.id} 
+              <Card
+                key={item.id}
                 className={`p-4 flex items-center ${item.isPacked ? 'bg-gray-50' : ''}`}
               >
                 <label className="flex items-center w-full cursor-pointer">
@@ -71,9 +72,7 @@ export default function PackingList({ tripId }: { tripId: string }) {
                   <div className={item.isPacked ? 'line-through text-gray-500' : ''}>
                     <span className="font-medium">{item.name}</span>
                     {item.quantity > 1 && (
-                      <span className="text-sm text-gray-500 ml-2">
-                        × {item.quantity}
-                      </span>
+                      <span className="text-sm text-gray-500 ml-2">× {item.quantity}</span>
                     )}
                   </div>
                 </label>
@@ -82,7 +81,7 @@ export default function PackingList({ tripId }: { tripId: string }) {
           </div>
         </div>
       ))}
-      
+
       {items.length === 0 && (
         <Card className="p-6 text-center text-gray-500">
           No items to pack. Go to the Edit view to add items to your trip.
@@ -90,4 +89,4 @@ export default function PackingList({ tripId }: { tripId: string }) {
       )}
     </div>
   );
-} 
+}

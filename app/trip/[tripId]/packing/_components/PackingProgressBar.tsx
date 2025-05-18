@@ -20,18 +20,18 @@ export default function PackingProgressBar({ tripId }: { tripId: string }) {
           <h2 className="text-lg font-medium">Packing Progress</h2>
           <span className="text-sm font-medium">{percentage}% Complete</span>
         </div>
-        
+
         <div className="h-4 w-full bg-gray-200 rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-green-500 transition-all duration-500 ease-in-out"
             style={{ width: `${percentage}%` }}
           />
         </div>
-        
+
         <div className="text-sm text-gray-500">
           {packedItems} of {totalItems} items packed
         </div>
       </div>
     </Card>
   );
-} 
+}

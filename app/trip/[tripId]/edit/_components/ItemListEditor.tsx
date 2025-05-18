@@ -41,9 +41,9 @@ export default function ItemListEditor({ tripId }: { tripId: string }) {
   const confirmDelete = () => {
     if (itemToDelete) {
       // Remove the item
-      setItems(items.filter(item => item.id !== itemToDelete));
+      setItems(items.filter((item) => item.id !== itemToDelete));
       // In a real implementation, this would update the store or call an API
-      
+
       // Close dialog and reset
       setIsDeleteDialogOpen(false);
       setItemToDelete(null);
@@ -76,15 +76,11 @@ export default function ItemListEditor({ tripId }: { tripId: string }) {
                 </div>
               </div>
               <div className="flex space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => handleEdit(item.id)}
-                >
+                <Button variant="outline" size="sm" onClick={() => handleEdit(item.id)}>
                   Edit
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="text-red-500 hover:bg-red-50"
                   onClick={() => handleDeleteClick(item.id)}
@@ -102,13 +98,15 @@ export default function ItemListEditor({ tripId }: { tripId: string }) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full">
             <h3 className="text-lg font-medium mb-4">Confirm Deletion</h3>
-            <p className="mb-6">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <p className="mb-6">
+              Are you sure you want to delete this item? This action cannot be undone.
+            </p>
             <div className="flex justify-end space-x-2">
               <Button variant="outline" onClick={cancelDelete}>
                 Cancel
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="text-red-500 hover:bg-red-50"
                 onClick={confirmDelete}
               >
@@ -120,4 +118,4 @@ export default function ItemListEditor({ tripId }: { tripId: string }) {
       </Dialog>
     </div>
   );
-} 
+}

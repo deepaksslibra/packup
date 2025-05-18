@@ -10,12 +10,12 @@ import { Card } from '@/components/ui/card';
  * @param {string} props.tripId - The ID of the trip being edited
  * @param {object} [props.item] - Optional item being edited, if not provided, will be in "add" mode
  */
-export default function EditItemForm({ 
-  tripId, 
-  item 
-}: { 
+export default function EditItemForm({
+  tripId,
+  item,
+}: {
   tripId: string;
-  item?: { id: string; name: string; category: string; quantity: number }
+  item?: { id: string; name: string; category: string; quantity: number };
 }) {
   const isEditMode = !!item;
   const [name, setName] = useState(item?.name || '');
@@ -26,7 +26,7 @@ export default function EditItemForm({
     e.preventDefault();
     // TODO: Add actual submit logic to add/edit items using store or API
     console.log('Item submitted:', { name, category, quantity, tripId });
-    
+
     // Reset form if in add mode
     if (!isEditMode) {
       setName('');
@@ -39,7 +39,7 @@ export default function EditItemForm({
     <Card className="p-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         <h2 className="text-xl font-medium">{isEditMode ? 'Edit Item' : 'Add New Item'}</h2>
-        
+
         <div>
           <label htmlFor="name" className="block text-sm font-medium mb-1">
             Item Name
@@ -53,7 +53,7 @@ export default function EditItemForm({
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="category" className="block text-sm font-medium mb-1">
             Category
@@ -67,7 +67,7 @@ export default function EditItemForm({
             required
           />
         </div>
-        
+
         <div>
           <label htmlFor="quantity" className="block text-sm font-medium mb-1">
             Quantity
@@ -82,13 +82,11 @@ export default function EditItemForm({
             required
           />
         </div>
-        
+
         <div className="flex justify-end">
-          <Button type="submit">
-            {isEditMode ? 'Update Item' : 'Add Item'}
-          </Button>
+          <Button type="submit">{isEditMode ? 'Update Item' : 'Add Item'}</Button>
         </div>
       </form>
     </Card>
   );
-} 
+}

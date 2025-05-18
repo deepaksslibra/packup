@@ -2,19 +2,18 @@
 
 import { useState } from 'react';
 import { useTripStore } from '@/store/tripStore';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { IconPicker } from '@/components/ui/icon-picker';
-import { Folder } from 'lucide-react';
-import { IconName } from 'lucide-react/dynamic';
+import { IconPickerDialog } from '@/components/ui/icon-picker-dialog';
+import { IconRenderer } from '@/components/ui/icon-picker';
 
 interface AddCategoryDialogProps {
   isOpen: boolean;
@@ -22,31 +21,27 @@ interface AddCategoryDialogProps {
   tripId: string;
 }
 
-export function AddCategoryDialog({ 
-  isOpen, 
-  onClose,
-  tripId 
-}: AddCategoryDialogProps) {
+export function AddCategoryDialog({ isOpen, onClose, tripId }: AddCategoryDialogProps) {
   const [categoryName, setCategoryName] = useState('');
-  const [icon, setIcon] = useState<IconName>('folder');
-  
-  const updateTrip = useTripStore(state => state.updateTrip);
-  const trips = useTripStore(state => state.trips);
-  const trip = trips.find(t => t.id === tripId);
+  const [icon, setIcon] = useState<string>('Folder');
+
+  const updateTrip = useTripStore((state) => state.updateTrip);
+  const trips = useTripStore((state) => state.trips);
+  const trip = trips.find((t) => t.id === tripId);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!trip || !categoryName.trim()) return;
-    
+
     // Check if the category already exists
-    const existingCategories = new Set(trip.items.map(item => item.category));
-    
+    const existingCategories = new Set(trip.items.map((item) => item.category));
+
     if (existingCategories.has(categoryName)) {
       // Category already exists, perhaps show an error message
       return;
     }
-    
+
     // Create a placeholder item for the new category
     const newItem = {
       id: crypto.randomUUID(),
@@ -54,22 +49,22 @@ export function AddCategoryDialog({
       category: categoryName,
       quantity: 1,
       essential: false,
-      icon: 'package'
+      icon: 'SquareStack',
     };
-    
+
     // Update the trip with the new category and its icon
     updateTrip({
       ...trip,
       items: [...trip.items, newItem],
       categoryIcons: {
         ...(trip.categoryIcons || {}),
-        [categoryName]: icon
-      }
+        [categoryName]: icon,
+      },
     });
-    
+
     // Reset form and close dialog
     setCategoryName('');
-    setIcon('folder');
+    setIcon('Folder');
     onClose();
   };
 
@@ -79,7 +74,7 @@ export function AddCategoryDialog({
         <DialogHeader>
           <DialogTitle>Add New Category</DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="grid grid-cols-[1fr_auto] gap-4">
             <div className="space-y-2">
@@ -87,21 +82,19 @@ export function AddCategoryDialog({
               <Input
                 id="categoryName"
                 value={categoryName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCategoryName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCategoryName(e.target.value)
+                }
                 placeholder="Clothing, Electronics, etc."
                 required
               />
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Icon</Label>
-              <IconPicker 
-                value={icon} 
-                onValueChange={setIcon}
-                triggerPlaceholder="Select icon"
-              />
+              <IconPickerDialog onSelect={setIcon} initialValue={icon} />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -112,4 +105,4 @@ export function AddCategoryDialog({
       </DialogContent>
     </Dialog>
   );
-} 
+}
