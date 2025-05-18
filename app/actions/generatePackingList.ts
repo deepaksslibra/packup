@@ -77,6 +77,7 @@ export async function generatePackingList(tripDetails: TripDetails): Promise<Pac
         icon: item.icon || category.defaultIcon,
         essential: item.essential || false,
         tags: item.tags || [],
+        estimatedWeight: item.estimatedWeight || 0, // Include the estimated weight from the master list
       }))
     );
 
@@ -118,6 +119,60 @@ ${tripDetails.luggageConstraints.weightDistribution ? `- Weight Distribution: ${
     const maxWeight = tripDetails.luggageConstraints?.maxTotalWeight
       ? tripDetails.luggageConstraints.maxTotalWeight
       : 5; // Default to 5kg if not specified
+    
+    // Convert maxWeight from kg to grams for easier calculations
+    const maxWeightGrams = maxWeight * 1000;
+
+    // Define a type for items with capacity information
+    type ItemWithCapacity = {
+      name: string;
+      category: string;
+      icon: string;
+      essential: boolean;
+      tags: string[];
+      estimatedWeight: number;
+      maxQuantity: number;
+      weightPercentage: string;
+    };
+
+    // Calculate how many items of each type can fit in the luggage based on their weight
+    const itemsWithCapacity = allItems.map(item => {
+      if (!item.estimatedWeight || item.estimatedWeight <= 0) {
+        return { 
+          ...item, 
+          maxQuantity: 1,
+          weightPercentage: '0%'
+        } as ItemWithCapacity;
+      }
+      const maxQuantity = Math.floor(maxWeightGrams / item.estimatedWeight);
+      return { 
+        ...item, 
+        maxQuantity: maxQuantity > 0 ? maxQuantity : 1,
+        weightPercentage: ((item.estimatedWeight / maxWeightGrams) * 100).toFixed(1) + '%'
+      } as ItemWithCapacity;
+    });
+
+    // Add the capacity information to the prompt
+    const capacityInfo = `
+WEIGHT CAPACITY INFORMATION:
+Based on your weight limit of ${maxWeight} kg (${maxWeightGrams} grams), here are some capacity insights:
+${itemsWithCapacity
+  .filter(item => item.estimatedWeight > 0)
+  .sort((a, b) => a.estimatedWeight - b.estimatedWeight)
+  .slice(0, 20) // Show only the 20 lightest items to keep the prompt size reasonable
+  .map(item => `- ${item.name}: ${item.estimatedWeight}g each (${item.weightPercentage} of your weight limit), max quantity: ${item.maxQuantity}`)
+  .join('\n')}
+
+Some of your heaviest items:
+${itemsWithCapacity
+  .filter(item => item.estimatedWeight > 0)
+  .sort((a, b) => b.estimatedWeight - a.estimatedWeight)
+  .slice(0, 10) // Show only the 10 heaviest items
+  .map(item => `- ${item.name}: ${item.estimatedWeight}g each (${item.weightPercentage} of your weight limit), max quantity: ${item.maxQuantity}`)
+  .join('\n')}
+
+Keep in mind that this is just the weight capacity. Physical space in your luggage is also a constraint.
+`;
 
     // Define the optimized prompt version (new)
     const optimizedPackingPrompt = `
@@ -128,11 +183,19 @@ Create a tailored list of items to pack for a specific trip, using only items fr
 - Trip location, duration, activities, and weather
 - User-defined total max weight limit (in grams)
 - Available luggage types and their physical constraints
+- Precise weight data for each item in the master list
+
+⚠️ IMPORTANT - WEIGHTS:
+- Each item in the master list already has an accurate weight in grams
+- DO NOT create your own weight estimates - use EXACTLY the weights provided in the master list
+- When adding an item to your response, copy its exact weight from the master list 
 
 TRIP DETAILS:
 ${tripDetailsFormatted}
 
-🧳 LUGGAGE BEHAVIOR:
+${capacityInfo}
+
+�� LUGGAGE BEHAVIOR:
 Pack items based on luggage type:
 ${
   tripDetails.luggageConstraints?.luggageType
@@ -155,6 +218,7 @@ NEVER exceed 100% of total allowed weight
 
 If space or weight is tight:
 - Prioritize essential, multi-use, weather-appropriate items
+- Prioritize clothing over toiletries when possible (as toiletries are often easier to buy at the destination)
 - Limit quantity and focus on high-utility gear
 - If needed, only include 1–2 absolutely critical items
 
@@ -167,8 +231,8 @@ Exclude items that are commonly available at the destination UNLESS:
 - They are hard to find in that region OR
 - There's enough leftover space/weight to include them comfortably
 
-Here is the master list of items to choose from:
-${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n')}
+Here is the master list of items to choose from with their exact weights:
+${allItems.map((item) => `- ${item.name} (Category: ${item.category}, Weight: ${item.estimatedWeight || 'unknown'} grams)`).join('\n')}
 
 ✅ FOR EACH ITEM, RETURN:
 {
@@ -204,7 +268,7 @@ ${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n
 `;
 
     // Choose which prompt to use (set to true to use the optimized prompt)
-    const useOptimizedPrompt = true;
+    const useOptimizedPrompt = false;
     const packingPrompt = useOptimizedPrompt
       ? optimizedPackingPrompt
       : `
@@ -218,6 +282,7 @@ CRITICAL WEIGHT TARGET: You MUST aim to utilize 85-95% of the available ${maxWei
 - For larger weight allowances (>15kg): Include extra quantities, comfort items, and contingency supplies
 - For medium weight allowances (8-15kg): Include reasonable quantities plus select comfort items
 - For small weight allowances (<8kg): Focus on essentials but still aim for 85-95% capacity
+- When space or weight is limited, prioritize clothing over toiletries as toiletries are generally easier to purchase at the destination
 
 CRITICAL SPACE CONSTRAINTS: You MUST consider the physical dimensions and space limitations of the selected luggage:
 ${tripDetails.luggageConstraints?.luggageType?.map((type) => `- ${type}`).join('\n') || '- Default luggage'}
@@ -243,8 +308,8 @@ Write explanations in a conversational, personalized tone, addressing the travel
 
 Consider weather conditions, trip duration, activities, local customs, and travel requirements. MAXIMIZE for the ${maxWeight} kg weight limit - aim for at least 85-95% of the available weight capacity. Choose larger quantities and additional comfort items to make efficient use of weight allowance WHILE ENSURING EVERYTHING FITS in the specified luggage.
 
-Here is the master list of items to choose from:
-${allItems.map((item) => `- ${item.name} (Category: ${item.category})`).join('\n')}
+Here is the master list of items to choose from with their exact weights:
+${allItems.map((item) => `- ${item.name} (Category: ${item.category}, Weight: ${item.estimatedWeight || 'unknown'} grams)`).join('\n')}
 
 Format your response as valid JSON with this structure:
 {
@@ -291,8 +356,8 @@ Do not include any explanatory text outside the JSON structure.
           const result = await model.generateContent({
             contents: [{ role: 'user', parts: [{ text: packingPrompt }] }],
             generationConfig: {
-              temperature: 0.2, // Lower temperature for more factual responses
-              maxOutputTokens: 8192, // Increased to allow for more comprehensive responses
+              temperature: 1, // Lower temperature for more factual responses
+              maxOutputTokens: 20000, // Increased to allow for more comprehensive responses
             },
             tools: [googleSearchTool],
           });
@@ -367,11 +432,23 @@ Do not include any explanatory text outside the JSON structure.
               2
             )
           );
+          
           // Calculate total weight to verify it matches the response
           let totalWeightGrams = 0;
-          packingList.items.forEach((item: { weight?: number; quantity?: number }) => {
-            totalWeightGrams += (item.weight || 0) * (item.quantity || 1);
+          
+          // New approach: Find the actual weight from the master list instead of using AI's estimate
+          packingList.items.forEach((item: { name: string; weight?: number; quantity?: number }) => {
+            // Find the item in the master list to get its accurate weight
+            const masterItem = allItems.find(mi => mi.name.toLowerCase() === item.name.toLowerCase());
+            const itemWeight = masterItem?.estimatedWeight || item.weight || 0;
+            totalWeightGrams += itemWeight * (item.quantity || 1);
+            
+            // Update the item's weight to the master list weight for consistency
+            if (masterItem?.estimatedWeight) {
+              item.weight = masterItem.estimatedWeight;
+            }
           });
+          
           const totalWeightKg = totalWeightGrams / 1000;
           console.log(
             `Calculated total weight: ${totalWeightKg.toFixed(2)} kg (limit: ${maxWeight} kg)`
@@ -379,27 +456,59 @@ Do not include any explanatory text outside the JSON structure.
           console.log(
             `Weight utilization: ${((totalWeightKg / maxWeight) * 100).toFixed(1)}% of allowance`
           );
-          // Check if model's approximateWeight matches our calculation
-          if (packingList.approximateWeight) {
-            console.log(`Model reported weight: ${packingList.approximateWeight}`);
-            console.log(`Actual calculated weight: ${totalWeightKg.toFixed(2)} kg`);
-            // Override the model's approximateWeight with our accurate calculation
-            packingList.approximateWeight = `${totalWeightKg.toFixed(2)} kg (${Math.round(
-              totalWeightGrams
-            )} grams, ${((totalWeightKg / maxWeight) * 100).toFixed(1)}% of ${maxWeight}kg limit)`;
+          
+          // Store both the model's original weight estimate and our calculated weight
+          const modelReportedWeight = packingList.approximateWeight || 'Not provided';
+          console.log(`Model reported weight: ${modelReportedWeight}`);
+          console.log(`Actual calculated weight: ${totalWeightKg.toFixed(2)} kg`);
+          
+          // Format the weight in kilograms
+          // First check if the model's weight already includes "kg"
+          let formattedWeight = modelReportedWeight;
+          if (modelReportedWeight && modelReportedWeight !== 'Not provided') {
+            // If weight is in grams (contains "g" or "grams" but not "kg")
+            if ((modelReportedWeight.includes('g') || modelReportedWeight.includes('gram')) 
+                && !modelReportedWeight.includes('kg')) {
+              // Extract numeric value - find first sequence of numbers, potentially with decimal point
+              const numberMatch = modelReportedWeight.match(/[\d,.]+/);
+              if (numberMatch && numberMatch[0]) {
+                // Convert to number, handling both comma and dot as decimal separators
+                const numValue = parseFloat(numberMatch[0].replace(',', '.'));
+                if (!isNaN(numValue)) {
+                  // Convert grams to kg
+                  const kgValue = numValue / 1000;
+                  formattedWeight = `${kgValue.toFixed(2)} kg`;
+                }
+              }
+            } 
+            // If no unit is specified, assume it's in kg already but format consistently
+            else if (!modelReportedWeight.includes('kg') && !modelReportedWeight.includes('g')) {
+              const numberMatch = modelReportedWeight.match(/[\d,.]+/);
+              if (numberMatch && numberMatch[0]) {
+                const numValue = parseFloat(numberMatch[0].replace(',', '.'));
+                if (!isNaN(numValue)) {
+                  formattedWeight = `${numValue.toFixed(2)} kg`;
+                }
+              }
+            }
           }
+          
+          // Use the formatted weight for the approximateWeight field
+          packingList.approximateWeight = formattedWeight;
+          
           // Verify weight limit compliance - just log a warning but don't trim anymore
           if (totalWeightKg > maxWeight) {
             console.warn(
               `WARNING: Generated packing list exceeds weight limit of ${maxWeight} kg with ${totalWeightKg.toFixed(2)} kg.`
             );
           }
+          
           // Merge the returned items with the master list to ensure we have all the properties
           const enrichedItems: PackingItem[] = packingList.items.map(
             (item: {
               name: string;
               quantity?: number;
-              weight: number;
+              weight?: number;
               essential?: boolean;
               category?: string;
               explanation: string;
@@ -407,35 +516,30 @@ Do not include any explanatory text outside the JSON structure.
               const masterItem = allItems.find(
                 (mi) => mi.name.toLowerCase() === item.name.toLowerCase()
               );
-              // Validate and potentially correct the weight value
-              const validatedWeight = validateItemWeight(
-                item.name,
-                item.category || '',
-                item.weight
-              );
-              if (validatedWeight !== item.weight) {
-                console.log(
-                  `Corrected weight for "${item.name}" from ${item.weight}g to ${validatedWeight}g`
-                );
-              }
+              
+              // Use the master list weight directly if available
+              const itemWeight = masterItem?.estimatedWeight || 
+                                (item.weight ? validateItemWeight(item.name, item.category || '', item.weight) : 0);
+                                
               if (!masterItem) {
                 console.warn(`Item not found in master list: ${item.name}`);
                 return {
                   id: uuidv4(),
                   name: item.name,
                   quantity: item.quantity || 1,
-                  weight: validatedWeight,
+                  weight: itemWeight,
                   essential: item.essential || false,
                   category: item.category,
                   explanation: item.explanation,
                   icon: 'Backpack', // Default icon if not found
                 };
               }
+              
               return {
                 id: uuidv4(),
                 name: item.name,
                 quantity: item.quantity || 1,
-                weight: validatedWeight,
+                weight: itemWeight,
                 essential: item.essential || false,
                 category: item.category || masterItem.category,
                 explanation: item.explanation,
@@ -443,11 +547,15 @@ Do not include any explanatory text outside the JSON structure.
               };
             }
           );
+          
+          // Add capacity information to the packing strategy
+          let packingStrategy = packingList.packingStrategy || '';
+          
           return {
             items: enrichedItems,
             suggestedTripName: packingList.suggestedTripName,
             weather: packingList.weather,
-            packingStrategy: packingList.packingStrategy,
+            packingStrategy: packingStrategy,
             approximateWeight: packingList.approximateWeight,
           };
         } catch (parseError: unknown) {
