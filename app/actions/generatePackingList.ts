@@ -326,13 +326,13 @@ Do not include any explanatory text outside the JSON structure.
           // Try parsing the JSON as-is first
           JSON.parse(jsonString);
         } catch (parseError: unknown) {
-          console.log(
-            'Initial JSON parsing failed, attempting to repair the JSON'
-          );
+          console.log('Initial JSON parsing failed, attempting to repair the JSON');
           // Check for common issues and attempt to repair
           if (
             jsonString.includes('"explanation": "') &&
-            parseError && typeof parseError === 'object' && 'message' in parseError &&
+            parseError &&
+            typeof parseError === 'object' &&
+            'message' in parseError &&
             typeof (parseError as { message?: string }).message === 'string' &&
             (parseError as { message: string }).message.includes('position')
           ) {
