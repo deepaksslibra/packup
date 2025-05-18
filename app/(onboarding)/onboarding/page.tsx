@@ -115,11 +115,11 @@ const OnboardingPage: FC = () => {
               </CardContent>
             </Card>
           </div>
-          
+
           {hasSavedTrips && (
             <div className="mt-6 text-center">
-              <button 
-                onClick={() => router.push('/trips')} 
+              <button
+                onClick={() => router.push('/trips')}
                 className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
               >
                 Go back to your saved trips

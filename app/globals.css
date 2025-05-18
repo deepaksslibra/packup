@@ -134,18 +134,36 @@
 }
 
 .satoshi-font {
-  font-family: "Satoshi", sans-serif;
+  font-family: 'Satoshi', sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
 
 /* Weight utility classes for Satoshi variable font */
-.satoshi-100 { font-weight: 100; }
-.satoshi-200 { font-weight: 200; }
-.satoshi-300 { font-weight: 300; }
-.satoshi-400 { font-weight: 400; }
-.satoshi-500 { font-weight: 500; }
-.satoshi-600 { font-weight: 600; }
-.satoshi-700 { font-weight: 700; }
-.satoshi-800 { font-weight: 800; }
-.satoshi-900 { font-weight: 900; }
+.satoshi-100 {
+  font-weight: 100;
+}
+.satoshi-200 {
+  font-weight: 200;
+}
+.satoshi-300 {
+  font-weight: 300;
+}
+.satoshi-400 {
+  font-weight: 400;
+}
+.satoshi-500 {
+  font-weight: 500;
+}
+.satoshi-600 {
+  font-weight: 600;
+}
+.satoshi-700 {
+  font-weight: 700;
+}
+.satoshi-800 {
+  font-weight: 800;
+}
+.satoshi-900 {
+  font-weight: 900;
+}
