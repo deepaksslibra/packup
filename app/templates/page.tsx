@@ -18,7 +18,7 @@ import {
   Tent,
   PersonSimpleTaiChi,
   Backpack,
-  Sailboat
+  Sailboat,
 } from '@phosphor-icons/react';
 
 /**
@@ -181,9 +181,9 @@ const TemplatesPage: FC = () => {
               let bgColor = 'bg-white';
               let hoverBgColor = 'hover:bg-gray-50';
               let iconBgColor = 'bg-blue-100';
-              
+
               // Set colors based on template type
-              switch(tpl.key) {
+              switch (tpl.key) {
                 case '2-day-city-break':
                   iconBgColor = 'bg-indigo-100';
                   if (isSelected) bgColor = 'bg-indigo-50';
@@ -238,7 +238,7 @@ const TemplatesPage: FC = () => {
                   if (isSelected) bgColor = 'bg-blue-50';
                   break;
               }
-              
+
               return (
                 <Card
                   key={tpl.key}
@@ -258,7 +258,9 @@ const TemplatesPage: FC = () => {
                 >
                   <CardContent className="flex flex-col items-start gap-4 p-6">
                     <div className="flex items-center gap-3">
-                      <div className={`${iconBgColor} rounded-full p-3 w-12 h-12 flex items-center justify-center`}>
+                      <div
+                        className={`${iconBgColor} rounded-full p-3 w-12 h-12 flex items-center justify-center`}
+                      >
                         {tpl.icon}
                       </div>
                       <div>

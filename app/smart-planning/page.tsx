@@ -30,7 +30,7 @@ import {
   User,
   Tent,
   Question,
-  Compass
+  Compass,
 } from '@phosphor-icons/react';
 
 /**
