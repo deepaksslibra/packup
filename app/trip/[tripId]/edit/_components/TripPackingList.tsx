@@ -254,13 +254,19 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                         {item.explanation && (
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <Info
-                                  size={16}
-                                  weight="bold"
-                                  color="#9177C7"
-                                  className="ml-0.5 hover:opacity-80 transition-opacity"
-                                />
+                              <TooltipTrigger asChild>
+                                <button
+                                  className="flex items-center justify-center p-1.5 -m-1 hover:bg-gray-100 rounded-full transition-colors"
+                                  type="button"
+                                  aria-label="Item information"
+                                >
+                                  <Info
+                                    size={16}
+                                    weight="bold"
+                                    color="#9177C7"
+                                    className="hover:opacity-80 transition-opacity"
+                                  />
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent side="bottom" className="max-w-xs">
                                 <p className="text-sm">{item.explanation}</p>
