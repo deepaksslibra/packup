@@ -48,9 +48,9 @@ export default function TripsPage() {
   // Check for and remove trips with zero items
   useEffect(() => {
     if (isClient && trips.length > 0) {
-      const emptyTrips = trips.filter(trip => trip.items.length === 0);
+      const emptyTrips = trips.filter((trip) => trip.items.length === 0);
       if (emptyTrips.length > 0) {
-        emptyTrips.forEach(trip => {
+        emptyTrips.forEach((trip) => {
           console.log(`Removing empty trip: ${trip.name} (ID: ${trip.id})`);
           removeTrip(trip.id);
         });

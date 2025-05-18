@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { IconPickerDialog } from '@/components/ui/icon-picker-dialog';
-import { IconRenderer } from '@/components/ui/icon-picker';
 
 interface EditItemDialogProps {
   isOpen: boolean;
@@ -29,7 +28,7 @@ export function EditItemDialog({ isOpen, onClose, tripId, item }: EditItemDialog
   const [category, setCategory] = useState(item.category);
   const [quantity, setQuantity] = useState(item.quantity);
   const [essential, setEssential] = useState(item.essential);
-  const [icon, setIcon] = useState<string>(item.icon || 'SquareStack');
+  const [icon, setIcon] = useState<string>(item.icon || 'PackageIcon');
 
   // Update state if the item prop changes
   useEffect(() => {
@@ -37,7 +36,7 @@ export function EditItemDialog({ isOpen, onClose, tripId, item }: EditItemDialog
     setCategory(item.category);
     setQuantity(item.quantity);
     setEssential(item.essential);
-    setIcon(item.icon || 'SquareStack');
+    setIcon(item.icon || 'PackageIcon');
   }, [item]);
 
   const updateTrip = useTripStore((state) => state.updateTrip);
@@ -73,6 +72,10 @@ export function EditItemDialog({ isOpen, onClose, tripId, item }: EditItemDialog
     ? Array.from(new Set(trip.items.map((item) => item.category)))
     : [];
 
+  const handleIconSelect = (selectedIcon: string) => {
+    setIcon(selectedIcon);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -95,7 +98,7 @@ export function EditItemDialog({ isOpen, onClose, tripId, item }: EditItemDialog
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Icon</Label>
-              <IconPickerDialog onSelect={setIcon} initialValue={icon} />
+              <IconPickerDialog onSelect={handleIconSelect} initialValue={icon} iconType="item" />
             </div>
           </div>
 

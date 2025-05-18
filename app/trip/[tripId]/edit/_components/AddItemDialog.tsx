@@ -15,7 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { IconPickerDialog } from '@/components/ui/icon-picker-dialog';
-import { IconRenderer } from '@/components/ui/icon-picker';
 
 interface AddItemDialogProps {
   isOpen: boolean;
@@ -29,7 +28,7 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
   const [category, setCategory] = useState(defaultCategory || '');
   const [quantity, setQuantity] = useState(1);
   const [essential, setEssential] = useState(false);
-  const [icon, setIcon] = useState<string>('SquareStack');
+  const [icon, setIcon] = useState<string>('PackageIcon');
 
   const updateTrip = useTripStore((state) => state.updateTrip);
   const trips = useTripStore((state) => state.trips);
@@ -61,7 +60,7 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
     setCategory(defaultCategory || '');
     setQuantity(1);
     setEssential(false);
-    setIcon('SquareStack');
+    setIcon('PackageIcon');
     onClose();
   };
 
@@ -69,6 +68,10 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
   const existingCategories = trip
     ? Array.from(new Set(trip.items.map((item) => item.category)))
     : [];
+
+  const handleIconSelect = (selectedIcon: string) => {
+    setIcon(selectedIcon);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -92,7 +95,7 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Icon</Label>
-              <IconPickerDialog onSelect={setIcon} initialValue={icon} />
+              <IconPickerDialog onSelect={handleIconSelect} initialValue={icon} iconType="item" />
             </div>
           </div>
 

@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { IconPickerDialog } from '@/components/ui/icon-picker-dialog';
-import { IconRenderer } from '@/components/ui/icon-picker';
 
 interface AddCategoryDialogProps {
   isOpen: boolean;
@@ -23,7 +22,7 @@ interface AddCategoryDialogProps {
 
 export function AddCategoryDialog({ isOpen, onClose, tripId }: AddCategoryDialogProps) {
   const [categoryName, setCategoryName] = useState('');
-  const [icon, setIcon] = useState<string>('Folder');
+  const [icon, setIcon] = useState<string>('BackpackIcon');
 
   const updateTrip = useTripStore((state) => state.updateTrip);
   const trips = useTripStore((state) => state.trips);
@@ -49,7 +48,7 @@ export function AddCategoryDialog({ isOpen, onClose, tripId }: AddCategoryDialog
       category: categoryName,
       quantity: 1,
       essential: false,
-      icon: 'SquareStack',
+      icon: 'PackageIcon',
     };
 
     // Update the trip with the new category and its icon
@@ -64,8 +63,12 @@ export function AddCategoryDialog({ isOpen, onClose, tripId }: AddCategoryDialog
 
     // Reset form and close dialog
     setCategoryName('');
-    setIcon('Folder');
+    setIcon('BackpackIcon');
     onClose();
+  };
+
+  const handleIconSelect = (selectedIcon: string) => {
+    setIcon(selectedIcon);
   };
 
   return (
@@ -91,7 +94,11 @@ export function AddCategoryDialog({ isOpen, onClose, tripId }: AddCategoryDialog
             </div>
             <div className="space-y-2 flex flex-col">
               <Label>Icon</Label>
-              <IconPickerDialog onSelect={setIcon} initialValue={icon} />
+              <IconPickerDialog
+                onSelect={handleIconSelect}
+                initialValue={icon}
+                iconType="category"
+              />
             </div>
           </div>
 
