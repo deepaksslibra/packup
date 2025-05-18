@@ -19,6 +19,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 // Mock data for development
 const MOCK_TRIP_ID = 'mock-trip-1';
@@ -39,6 +40,8 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
   const [itemToEdit, setItemToEdit] = useState<PackingItem | null>(null);
   const [categoryToEdit, setCategoryToEdit] = useState<{ name: string; icon: string } | null>(null);
   const [categoryToRemoveItems, setCategoryToRemoveItems] = useState<string | null>(null);
+  const [infoDialogItem, setInfoDialogItem] = useState<{explanation: string} | null>(null);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   // Track collapsed categories
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
@@ -252,27 +255,44 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                           </span>
                         )}
                         {item.explanation && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  className="flex items-center justify-center p-1.5 -m-1 hover:bg-gray-100 rounded-full transition-colors"
-                                  type="button"
-                                  aria-label="Item information"
-                                >
-                                  <Info
-                                    size={16}
-                                    weight="bold"
-                                    color="#9177C7"
-                                    className="hover:opacity-80 transition-opacity"
-                                  />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent side="bottom" className="max-w-xs">
-                                <p className="text-sm">{item.explanation}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <>
+                            {isDesktop ? (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      className="flex items-center justify-center p-1.5 -m-1 hover:bg-gray-100 rounded-full transition-colors"
+                                      type="button"
+                                      aria-label="Item information"
+                                    >
+                                      <Info
+                                        size={16}
+                                        weight="bold"
+                                        color="#9177C7"
+                                        className="hover:opacity-80 transition-opacity"
+                                      />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="bottom" className="max-w-xs">
+                                    <p className="text-sm">{item.explanation}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            ) : (
+                              <button
+                                className="flex items-center justify-center p-1 -m-0.5 bg-purple-50 hover:bg-purple-100 rounded-full transition-colors"
+                                onClick={() => setInfoDialogItem({ explanation: item.explanation || '' })}
+                                type="button"
+                                aria-label="Item information"
+                              >
+                                <Info
+                                  size={14}
+                                  weight="bold"
+                                  color="#9177C7"
+                                />
+                              </button>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
@@ -382,6 +402,25 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog for item explanation on mobile */}
+      {infoDialogItem && (
+        <Dialog open={!!infoDialogItem} onOpenChange={() => setInfoDialogItem(null)}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Item Information</DialogTitle>
+            </DialogHeader>
+            <div className="py-2">
+              <p>{infoDialogItem.explanation}</p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setInfoDialogItem(null)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
