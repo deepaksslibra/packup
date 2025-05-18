@@ -273,7 +273,9 @@ const TemplatesPage: FC = () => {
                         <div className="font-satoshi font-semibold text-gray-900 text-base md:text-[20px]">
                           {tpl.label}
                         </div>
-                        <div className="text-xs md:text-sm text-gray-600 opacity-80">{tpl.description}</div>
+                        <div className="text-xs md:text-sm text-gray-600 opacity-80">
+                          {tpl.description}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
