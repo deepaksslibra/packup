@@ -17,7 +17,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)', 'sans-serif'],
         serif: ['var(--font-serif)', 'serif'],
-        instrument: ['"Instrument Serif"', 'serif'],
+        satoshi: ['"Satoshi"', 'sans-serif'],
       },
       // Add custom theme extensions here (colors, spacing, etc.)
     },

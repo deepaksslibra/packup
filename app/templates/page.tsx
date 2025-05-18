@@ -264,7 +264,7 @@ const TemplatesPage: FC = () => {
                         {tpl.icon}
                       </div>
                       <div>
-                        <div className="font-instrument font-semibold text-gray-900 text-[20px]">
+                        <div className="font-satoshi font-semibold text-gray-900 text-[20px]">
                           {tpl.label}
                         </div>
                         <div className="text-sm text-gray-600 opacity-80">{tpl.description}</div>
