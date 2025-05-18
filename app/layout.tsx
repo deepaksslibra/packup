@@ -30,8 +30,11 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'PackUp - Never Forget Essential Travel Items Again',
-    description: 'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
-    images: ['https://opengraph.b-cdn.net/production/images/781721c9-4028-45c6-b385-e8a8a2bbd374.png?token=ZaOIUQEqyb6Gypn1RCQ9iFipEp5xkIp_9_R0TynudOg&height=961&width=1200&expires=33283600317'],
+    description:
+      'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
+    images: [
+      'https://opengraph.b-cdn.net/production/images/781721c9-4028-45c6-b385-e8a8a2bbd374.png?token=ZaOIUQEqyb6Gypn1RCQ9iFipEp5xkIp_9_R0TynudOg&height=961&width=1200&expires=33283600317',
+    ],
     creator: '@packupapp',
   },
   icons: {
