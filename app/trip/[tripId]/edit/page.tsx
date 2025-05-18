@@ -218,16 +218,16 @@ export default function TripEditPage() {
 
   return (
     <div>
-      {/* Navbar with bottom border - wider than content */}
-      <div className="border-b border-gray-200 mb-6 px-6 py-4">
-        <div className="flex justify-between items-center max-w-[95%] mx-auto">
-          <div className="flex items-center gap-2">
+      {/* Mobile-optimized navbar with sticky positioning and responsive sizing */}
+      <div className="border-b border-gray-200 mb-4 md:mb-6 px-4 md:px-6 py-3 md:py-4 sticky top-0 bg-white z-10">
+        <div className="flex justify-between items-center w-full max-w-[95%] mx-auto">
+          <div className="flex items-center gap-2 max-w-[70%] md:max-w-none">
             {isEditingTitle ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full">
                 <Input
                   value={titleValue}
                   onChange={(e) => setTitleValue(e.target.value)}
-                  className="w-64"
+                  className="w-full md:w-64 text-sm md:text-base"
                   autoFocus
                   onBlur={handleSaveTitle}
                   onKeyDown={(e) => e.key === 'Enter' && handleSaveTitle()}
@@ -235,11 +235,11 @@ export default function TripEditPage() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-semibold font-serif">{trip.name}</h1>
+                <h1 className="text-lg md:text-xl font-semibold font-serif truncate">{trip.name}</h1>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6"
+                  className="h-6 w-6 flex-shrink-0"
                   onClick={() => setIsEditingTitle(true)}
                 >
                   <PencilIcon className="h-3.5 w-3.5" />
@@ -248,22 +248,22 @@ export default function TripEditPage() {
             )}
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex">
             <Button
               variant="outline"
               size="sm"
-              className="text-sm flex items-center gap-1"
+              className="text-xs md:text-sm flex items-center gap-1 h-8 md:h-9"
               onClick={handleSaveTrip}
             >
-              <Save className="h-4 w-4" />
-              Save Trip
+              <Save className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              <span className="hidden sm:inline">Save</span> Trip
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Main content area - narrower than navbar */}
-      <div className="max-w-3xl mx-auto px-4">
+      {/* Responsive main content area with proper padding */}
+      <div className="max-w-3xl mx-auto px-3 md:px-4">
         {/* AI Recommendation loading state */}
         {trip.isLoadingItems || isLoadingRecommendations ? (
           <>
@@ -375,17 +375,17 @@ export default function TripEditPage() {
           </>
         ) : (
           <>
-            {/* Redesigned Trip Info Card based on the provided design */}
+            {/* Responsive trip info card with proper text and element sizing */}
             {trip.startDate && trip.endDate ? (
-              <div className="bg-gray-50 p-4 rounded-lg mb-8">
-                <div className="flex flex-col space-y-4">
+              <div className="bg-gray-50 p-3 md:p-4 rounded-lg mb-6 md:mb-8">
+                <div className="flex flex-col space-y-3 md:space-y-4">
                   {/* Location & Date */}
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex items-start gap-2 md:gap-3">
+                    <MapPin className="h-4 w-4 md:h-5 md:w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <h2 className="font-medium">{trip.location}</h2>
-                      <div className="flex items-center gap-2 text-gray-500 text-sm">
-                        <Calendar className="h-4 w-4" />
+                      <h2 className="font-medium text-sm md:text-base">{trip.location}</h2>
+                      <div className="flex items-center gap-1 md:gap-2 text-gray-500 text-xs md:text-sm">
+                        <Calendar className="h-3 w-3 md:h-4 md:w-4" />
                         <span>{formatDateRange()}</span>
                       </div>
                     </div>
@@ -393,18 +393,18 @@ export default function TripEditPage() {
 
                   {/* Weather */}
                   {trip.weather && (
-                    <div className="flex items-start gap-3">
-                      <Sun className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <Sun className="h-4 w-4 md:h-5 md:w-5 text-amber-500 mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-medium">{trip.weather.temperature}</span>
-                          <div className="text-xs px-2 py-1 rounded-full text-amber-600 border border-amber-200 bg-amber-50">
+                        <div className="flex items-center flex-wrap gap-1.5 md:gap-2">
+                          <span className="font-medium text-sm md:text-base">{trip.weather.temperature}</span>
+                          <div className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-amber-600 border border-amber-200 bg-amber-50">
                             {trip.weather.condition}
                           </div>
                           {trip.weather.weatherTags?.map((tag, index) => (
                             <div
                               key={index}
-                              className={`text-xs px-2 py-1 rounded-full ${
+                              className={`text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full ${
                                 index === 0
                                   ? 'text-blue-600 border border-blue-200 bg-blue-50'
                                   : 'text-purple-600 border border-purple-200 bg-purple-50'
@@ -414,14 +414,14 @@ export default function TripEditPage() {
                             </div>
                           ))}
                         </div>
-                        <p className="text-gray-600 text-sm mt-1">{trip.weather.forecast}</p>
+                        <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">{trip.weather.forecast}</p>
                       </div>
                     </div>
                   )}
 
                   {/* Approximate Weight */}
                   {trip.approximateWeight && (
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2 md:gap-3">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -430,7 +430,7 @@ export default function TripEditPage() {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0"
+                        className="h-4 w-4 md:h-5 md:w-5 text-orange-600 mt-0.5 flex-shrink-0"
                       >
                         <path d="M6 18h12" />
                         <path d="M12 8a4 4 0 0 0-2 7.5" />
@@ -438,8 +438,8 @@ export default function TripEditPage() {
                         <path d="M12 2v6" />
                       </svg>
                       <div>
-                        <h2 className="font-medium">Approximate Weight</h2>
-                        <p className="text-gray-600 text-sm mt-1">
+                        <h2 className="font-medium text-sm md:text-base">Approximate Weight</h2>
+                        <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">
                           Estimated total packed weight:{' '}
                           <span className="font-semibold">{trip.approximateWeight}</span>
                         </p>
@@ -448,11 +448,11 @@ export default function TripEditPage() {
                   )}
 
                   {/* Packing Strategy */}
-                  <div className="flex items-start gap-3">
-                    <Shirt className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex items-start gap-2 md:gap-3">
+                    <Shirt className="h-4 w-4 md:h-5 md:w-5 text-green-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <h2 className="font-medium">Packing Strategy</h2>
-                      <p className="text-gray-600 text-sm mt-1">
+                      <h2 className="font-medium text-sm md:text-base">Packing Strategy</h2>
+                      <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">
                         {trip.packingStrategy || (
                           <>
                             We&apos;ve recommended items based on your{' '}
@@ -469,7 +469,7 @@ export default function TripEditPage() {
                   </div>
 
                   {/* Powered by Gemini */}
-                  <div className="flex items-center justify-end text-sm text-gray-500">
+                  <div className="flex items-center justify-end text-xs md:text-sm text-gray-500">
                     Powered by
                     <Image
                       src="/gemini.svg"
@@ -483,19 +483,32 @@ export default function TripEditPage() {
               </div>
             ) : null}
 
+            {/* Mobile-optimized packing list component */}
             <TripPackingList tripId={tripId} />
           </>
         )}
 
-        <div className="mt-8 mb-8 flex justify-center">
+        {/* Responsive "Add New Category" button with proper sizing */}
+        <div className="mt-6 md:mt-8 mb-6 md:mb-8 flex justify-center">
           <Button
             variant="outline"
-            className="flex items-center gap-2 rounded-full px-6 border-dashed"
+            className="flex items-center gap-1.5 md:gap-2 rounded-full px-4 md:px-6 py-2 md:py-2.5 border-dashed text-sm md:text-base"
             onClick={() => setIsAddCategoryOpen(true)}
             disabled={trip.isLoadingItems || isLoadingRecommendations}
           >
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
             Add New Category
+          </Button>
+        </div>
+
+        {/* Mobile-specific fixed floating action button for adding items */}
+        <div className="fixed bottom-6 right-6 md:hidden z-10">
+          <Button
+            onClick={() => setIsAddItemOpen(true)}
+            className="h-12 w-12 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 flex items-center justify-center"
+            disabled={trip.isLoadingItems || isLoadingRecommendations}
+          >
+            <PlusIcon className="h-5 w-5" />
           </Button>
         </div>
 

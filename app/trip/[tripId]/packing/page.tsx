@@ -44,7 +44,7 @@ export default function TripPackingPage() {
   }, [trip, router, isClient]);
 
   if (!isClient || !trip) {
-    return <div className="p-12 flex justify-center">Loading trip...</div>;
+    return <div className="p-4 md:p-12 flex justify-center">Loading trip...</div>;
   }
 
   // Packing stats
@@ -285,17 +285,21 @@ export default function TripPackingPage() {
   return (
     <div>
       {/* Navbar with bottom border */}
-      <div className="border-b border-gray-200 mb-6 px-6 py-4">
-        <div className="flex justify-between items-center max-w-[95%] mx-auto">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={() => router.push('/trips')}>
-              <ArrowLeft className="h-5 w-5" />
+      <div className="border-b border-gray-200 mb-4 md:mb-6 px-3 md:px-6 py-3 md:py-4">
+        <div className="flex justify-between items-center max-w-[100%] md:max-w-[95%] mx-auto">
+          <div className="flex items-center gap-1 md:gap-2">
+            <Button variant="ghost" size="icon" className="h-8 w-8 md:h-10 md:w-10" onClick={() => router.push('/trips')}>
+              <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
-            <h1 className="text-xl font-semibold font-serif">{trip.name}</h1>
+            <h1 className="text-base md:text-xl font-semibold font-serif truncate max-w-[180px] md:max-w-none">{trip.name}</h1>
           </div>
           <div>
-            <Button variant="outline" className="flex items-center gap-2" onClick={generatePDF}>
-              <Printer className="h-4 w-4" />
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-1 md:gap-2 text-xs md:text-sm h-8 md:h-9 px-2 md:px-3"
+              onClick={generatePDF}
+            >
+              <Printer className="h-3.5 w-3.5 md:h-4 md:w-4" />
               Print List
             </Button>
           </div>
@@ -303,12 +307,12 @@ export default function TripPackingPage() {
       </div>
 
       {/* Main content area */}
-      <div className="max-w-3xl mx-auto px-4 py-4" ref={contentRef}>
+      <div className="max-w-3xl mx-auto px-3 md:px-4 py-3 md:py-4" ref={contentRef}>
         {/* Packing Progress */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-medium">Packing Progress</h2>
-            <span className="text-sm font-medium">{packingPercentage}% packed</span>
+        <div className="mb-4 md:mb-6">
+          <div className="flex justify-between items-center mb-1 md:mb-2">
+            <h2 className="text-base md:text-lg font-medium">Packing Progress</h2>
+            <span className="text-xs md:text-sm font-medium">{packingPercentage}% packed</span>
           </div>
           <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
             <div
@@ -319,28 +323,39 @@ export default function TripPackingPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6">
+        <div className="flex mb-4 md:mb-6 border rounded-md overflow-hidden">
           <Button
-            variant={activeFilter === 'all' ? 'default' : 'outline'}
+            variant="ghost"
             onClick={() => setActiveFilter('all')}
-            className={cn(activeFilter === 'all' ? 'bg-blue-600 hover:bg-blue-700 text-white' : '')}
+            className={cn(
+              "text-xs md:text-sm rounded-none h-10 flex-1 border-0",
+              activeFilter === 'all' 
+                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+                : 'bg-white hover:bg-gray-50'
+            )}
           >
             All Items
           </Button>
           <Button
-            variant={activeFilter === 'essential' ? 'default' : 'outline'}
+            variant="ghost"
             onClick={() => setActiveFilter('essential')}
             className={cn(
-              activeFilter === 'essential' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''
+              "text-xs md:text-sm rounded-none h-10 flex-1 border-x border-gray-200",
+              activeFilter === 'essential' 
+                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+                : 'bg-white hover:bg-gray-50'
             )}
           >
             Essential Only
           </Button>
           <Button
-            variant={activeFilter === 'remaining' ? 'default' : 'outline'}
+            variant="ghost"
             onClick={() => setActiveFilter('remaining')}
             className={cn(
-              activeFilter === 'remaining' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''
+              "text-xs md:text-sm rounded-none h-10 flex-1 border-0",
+              activeFilter === 'remaining' 
+                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+                : 'bg-white hover:bg-gray-50'
             )}
           >
             Still to Pack
@@ -348,18 +363,18 @@ export default function TripPackingPage() {
         </div>
 
         {/* Packing List */}
-        <div className="space-y-6">
+        <div className="space-y-5 md:space-y-6">
           {Object.entries(groupedItems).map(([category, items]) => (
-            <div key={category} className="space-y-2">
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                <IconRenderer icon={getCategoryIcon(category)} className="size-5 text-blue-500" />
+            <div key={category} className="space-y-2 md:space-y-3">
+              <h3 className="text-base md:text-lg font-medium flex items-center gap-1.5 md:gap-2 text-blue-600">
+                <IconRenderer icon={getCategoryIcon(category)} className="size-4 md:size-5 text-blue-600" />
                 {category}
               </h3>
-              <div className="space-y-1">
+              <div>
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="border rounded-md py-3 px-4 flex items-center justify-between"
+                    className="py-2 md:py-3 border-b border-gray-100 flex items-center justify-between"
                   >
                     <div className="flex items-center">
                       <input
@@ -367,21 +382,23 @@ export default function TripPackingPage() {
                         id={item.id}
                         checked={!!item.packed}
                         onChange={() => toggleItemPacked(item.id)}
-                        className="h-5 w-5 rounded border-gray-300 mr-3"
+                        className="h-5 w-5 md:h-5 md:w-5 rounded border-gray-300 mr-3"
                       />
                       <label
                         htmlFor={item.id}
                         className={cn(
-                          'font-medium cursor-pointer flex items-center gap-2',
-                          item.packed ? 'line-through text-gray-400' : ''
+                          'text-sm md:text-base cursor-pointer flex items-center',
+                          item.packed ? 'line-through text-gray-400' : 'text-gray-800'
                         )}
                       >
-                        <IconRenderer icon={getItemIcon(item)} className="size-4 text-gray-500" />
-                        {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
+                        <IconRenderer icon={getItemIcon(item)} className="size-4 md:size-4 text-gray-600 mr-2" />
+                        <span>
+                          {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
+                        </span>
                       </label>
                     </div>
                     {item.essential && (
-                      <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200">
+                      <span className="text-xs bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 whitespace-nowrap ml-1">
                         Essential
                       </span>
                     )}
@@ -392,7 +409,7 @@ export default function TripPackingPage() {
           ))}
 
           {Object.keys(groupedItems).length === 0 && (
-            <Card className="p-6 text-center text-gray-500">
+            <Card className="p-4 md:p-6 text-center text-gray-500 text-sm md:text-base">
               No items match your current filter.
             </Card>
           )}
