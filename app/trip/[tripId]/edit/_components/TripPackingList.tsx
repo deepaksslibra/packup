@@ -40,8 +40,8 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
   const [itemToEdit, setItemToEdit] = useState<PackingItem | null>(null);
   const [categoryToEdit, setCategoryToEdit] = useState<{ name: string; icon: string } | null>(null);
   const [categoryToRemoveItems, setCategoryToRemoveItems] = useState<string | null>(null);
-  const [infoDialogItem, setInfoDialogItem] = useState<{explanation: string} | null>(null);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [infoDialogItem, setInfoDialogItem] = useState<{ explanation: string } | null>(null);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   // Track collapsed categories
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
@@ -281,15 +281,13 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                             ) : (
                               <button
                                 className="flex items-center justify-center p-1 -m-0.5 bg-purple-50 hover:bg-purple-100 rounded-full transition-colors"
-                                onClick={() => setInfoDialogItem({ explanation: item.explanation || '' })}
+                                onClick={() =>
+                                  setInfoDialogItem({ explanation: item.explanation || '' })
+                                }
                                 type="button"
                                 aria-label="Item information"
                               >
-                                <Info
-                                  size={14}
-                                  weight="bold"
-                                  color="#9177C7"
-                                />
+                                <Info size={14} weight="bold" color="#9177C7" />
                               </button>
                             )}
                           </>
