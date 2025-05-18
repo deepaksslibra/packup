@@ -14,6 +14,24 @@ import {
   StepperTrigger,
 } from '@/components/ui/stepper';
 import { Button } from '@/components/ui/button';
+import {
+  Binoculars,
+  Mountains,
+  FigmaLogo,
+  Barbell,
+  Moon,
+  Package,
+  Suitcase,
+  SuitcaseRolling,
+  SuitcaseSimple,
+  Backpack,
+  Briefcase,
+  TShirt,
+  User,
+  Tent,
+  Question,
+  Compass
+} from '@phosphor-icons/react';
 
 /**
  * Smart Planning Questionnaire page with split layout matching onboarding.
@@ -25,8 +43,9 @@ const steps = [
   { step: 1, title: 'Trip Basics', description: 'Where and when are you traveling?' },
   { step: 2, title: 'About You', description: 'Tell us about yourself and your trip.' },
   { step: 3, title: 'Activities', description: 'Any specific activities planned?' },
+  { step: 4, title: 'Luggage', description: 'What luggage will you carry?' },
   {
-    step: 4,
+    step: 5,
     title: 'Special Needs',
     description: 'Any special needs or considerations? (optional)',
   },
@@ -80,75 +99,48 @@ const SmartPlanningPage: FC = () => {
   const handleTripTypeChange = (type: string) => {
     setAnswers({ tripType: type });
   };
+  const handleLuggageTypeChange = (type: string) => {
+    const exists = answers.luggageType.includes(type);
+    const newLuggageTypes = exists
+      ? answers.luggageType.filter((t) => t !== type)
+      : [...answers.luggageType, type];
+    setAnswers({ luggageType: newLuggageTypes });
+  };
+  const handleLuggageWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAnswers({ luggageWeight: e.target.value });
+  };
 
   // Activity options with icons
   const activityOptions = [
     {
       label: 'Sightseeing',
       value: 'Sightseeing',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="8" stroke="#2563eb" strokeWidth="2" />
-          <circle cx="12" cy="12" r="3" stroke="#2563eb" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Binoculars size={32} weight="duotone" color="#2563eb" />,
     },
     {
       label: 'Hiking',
       value: 'Hiking',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <path d="M6 21l6-6 6 6" stroke="#16a34a" strokeWidth="2" />
-          <path d="M12 3v12" stroke="#16a34a" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Mountains size={32} weight="duotone" color="#16a34a" />,
     },
     {
       label: 'Swimming/Beach',
       value: 'Swimming/Beach',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <path
-            d="M2 17c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"
-            stroke="#0ea5e9"
-            strokeWidth="2"
-          />
-          <circle cx="12" cy="8" r="3" stroke="#0ea5e9" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <FigmaLogo size={32} weight="duotone" color="#0ea5e9" />,
     },
     {
       label: 'Sports',
       value: 'Sports',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="8" stroke="#f59e42" strokeWidth="2" />
-          <path d="M4 12h16M12 4v16" stroke="#f59e42" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Barbell size={32} weight="duotone" color="#f59e42" />,
     },
     {
       label: 'Nightlife',
       value: 'Nightlife',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <path
-            d="M12 3v2M12 19v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-            stroke="#a21caf"
-            strokeWidth="2"
-          />
-          <circle cx="12" cy="12" r="5" stroke="#a21caf" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Moon size={32} weight="duotone" color="#a21caf" />,
     },
     {
       label: 'Other',
       value: 'Other',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Question size={32} weight="duotone" color="#64748b" />,
     },
   ];
 
@@ -172,6 +164,30 @@ const SmartPlanningPage: FC = () => {
     setAnswers({ specialNeeds: e.target.value });
   };
 
+  // Luggage type options with icons
+  const luggageOptions = [
+    {
+      label: 'Backpack (Carry-on)',
+      value: 'Backpack',
+      icon: <Backpack size={32} weight="duotone" color="#0ea5e9" />,
+    },
+    {
+      label: 'Small Cabin Luggage',
+      value: 'Small Cabin Luggage',
+      icon: <SuitcaseSimple size={32} weight="duotone" color="#2563eb" />,
+    },
+    {
+      label: 'Medium Check-in Luggage',
+      value: 'Medium Check-in Luggage',
+      icon: <Suitcase size={32} weight="duotone" color="#16a34a" />,
+    },
+    {
+      label: 'Large Check-in Luggage',
+      value: 'Large Check-in Luggage',
+      icon: <SuitcaseRolling size={32} weight="duotone" color="#dc2626" />,
+    },
+  ];
+
   // Validation for required steps
   const isNextDisabled = () => {
     if (currentStep === 1) {
@@ -187,6 +203,9 @@ const SmartPlanningPage: FC = () => {
       }
       return answers.activities.length === 0;
     }
+    if (currentStep === 4) {
+      return answers.luggageType.length === 0 || !answers.luggageWeight.trim();
+    }
     // Other steps will be validated as implemented
     return false;
   };
@@ -196,78 +215,39 @@ const SmartPlanningPage: FC = () => {
     {
       label: 'Male',
       value: 'Male',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="10" r="4" stroke="#2563eb" strokeWidth="2" />
-          <path d="M6 20v-2a4 4 0 0 1 4-4h0a4 4 0 0 1 4 4v2" stroke="#2563eb" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <User size={32} weight="duotone" color="#2563eb" />,
     },
     {
       label: 'Female',
       value: 'Female',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="10" r="4" stroke="#d946ef" strokeWidth="2" />
-          <path d="M12 14v6M9 20h6" stroke="#d946ef" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <User size={32} weight="duotone" color="#d946ef" />,
     },
     {
       label: 'Prefer not to say',
       value: 'Prefer not to say',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <circle cx="12" cy="10" r="4" stroke="#64748b" strokeWidth="2" />
-          <path d="M6 20h12" stroke="#64748b" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <User size={32} weight="duotone" color="#64748b" />,
     },
   ];
   const tripTypeOptions = [
     {
       label: 'Vacation/Leisure',
       value: 'Vacation/Leisure',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <path
-            d="M3 17h18M4 17V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v10"
-            stroke="#2563eb"
-            strokeWidth="2"
-          />
-          <circle cx="8" cy="21" r="1" fill="#2563eb" />
-          <circle cx="16" cy="21" r="1" fill="#2563eb" />
-        </svg>
-      ),
+      icon: <Package size={32} weight="duotone" color="#2563eb" />,
     },
     {
       label: 'Business',
       value: 'Business',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <rect x="4" y="7" width="16" height="13" rx="2" stroke="#0ea5e9" strokeWidth="2" />
-          <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#0ea5e9" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Briefcase size={32} weight="duotone" color="#0ea5e9" />,
     },
     {
       label: 'Adventure/Outdoor',
       value: 'Adventure/Outdoor',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <path d="M3 21l9-18 9 18H3z" stroke="#16a34a" strokeWidth="2" />
-          <circle cx="12" cy="17" r="1" fill="#16a34a" />
-        </svg>
-      ),
+      icon: <Tent size={32} weight="duotone" color="#16a34a" />,
     },
     {
       label: 'Other',
       value: 'Other',
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-          <rect x="4" y="4" width="16" height="16" rx="4" stroke="#64748b" strokeWidth="2" />
-        </svg>
-      ),
+      icon: <Compass size={32} weight="duotone" color="#64748b" />,
     },
   ];
 
@@ -454,6 +434,43 @@ const SmartPlanningPage: FC = () => {
             </>
           )}
           {currentStep === 4 && (
+            <>
+              <div className="mb-8 w-full">
+                <label className="block text-sm font-medium mb-2">Select Luggage Type(s)</label>
+                <div className="flex gap-4 flex-wrap">
+                  {luggageOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleLuggageTypeChange(option.value)}
+                      className={`flex flex-col items-center justify-center px-4 py-3 rounded-xl border transition-colors w-40 h-32 focus:outline-none
+                        ${answers.luggageType.includes(option.value) ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-200' : 'border-gray-200 bg-white hover:bg-blue-50'}`}
+                      aria-pressed={answers.luggageType.includes(option.value)}
+                    >
+                      {option.icon}
+                      <span className="mt-2 text-sm font-medium text-gray-900">{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mb-8 w-full">
+                <label className="block text-sm font-medium mb-2" htmlFor="luggage-weight">
+                  Approximate Weight (kg)
+                </label>
+                <input
+                  id="luggage-weight"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  className="w-full max-w-[200px] border border-gray-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                  placeholder="e.g., 15"
+                  value={answers.luggageWeight}
+                  onChange={handleLuggageWeightChange}
+                />
+              </div>
+            </>
+          )}
+          {currentStep === 5 && (
             <>
               <div className="mb-8 w-full">
                 <label className="block text-sm font-medium mb-2" htmlFor="special-needs">

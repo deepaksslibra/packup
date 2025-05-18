@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { useOnboardingStore } from '@/store/onboardingStore';
+import { Suitcase, ChatCircleText, ClipboardText, CaretRight } from '@phosphor-icons/react';
 
 /**
  * Onboarding page for the AI-Powered Packing Checklist app (PackUp).
@@ -26,10 +27,8 @@ const OnboardingPage: FC = () => {
         <div className="flex flex-col gap-6 max-w-xs w-full">
           <div className="flex items-center gap-2">
             <div className="bg-white bg-opacity-20 rounded-full p-2">
-              {/* Suitcase/travel icon placeholder */}
-              <span className="text-2xl font-bold" aria-label="Suitcase" role="img">
-                🧳
-              </span>
+              {/* Suitcase icon */}
+              <Suitcase size={24} weight="fill" aria-label="Suitcase" />
             </div>
             <span className="font-semibold text-lg tracking-wide">PackUp</span>
           </div>
@@ -71,9 +70,7 @@ const OnboardingPage: FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-600 text-white rounded-full p-2">
                     {/* Smart Planning icon */}
-                    <span className="text-lg" aria-label="Chat" role="img">
-                      💬
-                    </span>
+                    <ChatCircleText size={24} weight="fill" aria-label="Chat" />
                   </div>
                   <div>
                     <div className="font-semibold text-blue-900">Smart Planning</div>
@@ -83,15 +80,7 @@ const OnboardingPage: FC = () => {
                   </div>
                 </div>
                 <div className="text-blue-600">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                    <path
-                      d="M7 5l5 5-5 5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <CaretRight size={20} weight="bold" />
                 </div>
               </CardContent>
             </Card>
@@ -110,9 +99,7 @@ const OnboardingPage: FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="bg-blue-100 text-blue-600 rounded-full p-2">
                     {/* Template icon */}
-                    <span className="text-lg" aria-label="Template" role="img">
-                      📋
-                    </span>
+                    <ClipboardText size={24} weight="fill" aria-label="Template" />
                   </div>
                   <div>
                     <div className="font-semibold text-gray-800">Predefined Templates</div>
@@ -122,15 +109,7 @@ const OnboardingPage: FC = () => {
                   </div>
                 </div>
                 <div className="text-blue-600">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
-                    <path
-                      d="M7 5l5 5-5 5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <CaretRight size={20} weight="bold" />
                 </div>
               </CardContent>
             </Card>

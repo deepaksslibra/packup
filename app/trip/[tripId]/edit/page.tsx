@@ -147,26 +147,19 @@ export default function TripEditPage() {
 
       {/* Main content area - narrower than navbar */}
       <div className="max-w-3xl mx-auto px-4">
-        {/* Location/Date and Add Item row */}
-        <div className="flex justify-between items-center mb-8">
+        {/* Location/Date row */}
+        <div className="mb-8">
           <div>
             {trip.location && <h2 className="text-lg font-medium font-serif">{trip.location}</h2>}
             {trip.startDate && trip.endDate && (
               <p className="text-sm text-gray-600">{formatDateRange()}</p>
             )}
           </div>
-          <Button
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => setIsAddItemOpen(true)}
-          >
-            <PlusIcon className="h-4 w-4" />
-            Add Item
-          </Button>
         </div>
 
         <TripPackingList tripId={tripId} />
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 mb-8 flex justify-center">
           <Button
             variant="outline"
             className="flex items-center gap-2 rounded-full px-6 border-dashed"

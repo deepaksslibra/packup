@@ -8,6 +8,18 @@ import { useTripStore } from '@/store/tripStore';
 import { v4 as uuidv4 } from 'uuid';
 import { Trip, PackingItem } from '@/features/trip/types';
 import { templateItems, categoryIcons } from '@/features/trip/data/templateItems';
+import {
+  Buildings,
+  Car,
+  UmbrellaSimple,
+  Mountains,
+  Briefcase,
+  Bank,
+  Tent,
+  PersonSimpleTaiChi,
+  Backpack,
+  Sailboat
+} from '@phosphor-icons/react';
 
 /**
  * Predefined Templates page for PackUp.
@@ -20,110 +32,70 @@ const templates = [
     label: '2-Day City Break',
     description:
       'A short urban getaway focused on sightseeing, culinary experiences, and cultural attractions in a single city.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="City">
-        🏙️
-      </span>
-    ),
+    icon: <Buildings size={32} weight="duotone" color="#6366f1" />,
   },
   {
     key: '3-day-weekend-road-trip',
     label: '3-Day Weekend Road Trip',
     description:
       'A budget-friendly drive itinerary covering scenic routes, small towns, and national parks over a long weekend.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Car">
-        🚗
-      </span>
-    ),
+    icon: <Car size={32} weight="duotone" color="#f97316" />,
   },
   {
     key: '7-day-beach-vacation',
     label: '7-Day Beach Vacation',
     description:
       'A week-long stay at a coastal resort or beachfront rental, emphasizing relaxation and water activities.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Beach">
-        🏖️
-      </span>
-    ),
+    icon: <UmbrellaSimple size={32} weight="duotone" color="#0ea5e9" />,
   },
   {
     key: '3-day-hiking-adventure',
     label: '3-Day Hiking Adventure',
     description:
       'A multi-day trek through forest or mountain trails, staying in lodges or campsites.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Hiking">
-        🥾
-      </span>
-    ),
+    icon: <Mountains size={32} weight="duotone" color="#16a34a" />,
   },
   {
     key: '2-day-business-trip',
     label: '2-Day Business Trip',
     description:
       'A short corporate itinerary for meetings or conferences, with options to extend stay for leisure activities.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Briefcase">
-        💼
-      </span>
-    ),
+    icon: <Briefcase size={32} weight="duotone" color="#4b5563" />,
   },
   {
     key: '5-day-cultural-tour',
     label: '5-Day Cultural Tour',
     description:
       'An immersive journey visiting museums, historic sites, and local workshops to engage with heritage and arts.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Museum">
-        🏛️
-      </span>
-    ),
+    icon: <Bank size={32} weight="duotone" color="#a855f7" />,
   },
   {
     key: '2-day-camping-getaway',
     label: '2-Day Camping Getaway',
     description:
       'An overnight campsite stay with hiking, campfire cooking, and stargazing for nature immersion.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Camping">
-        ⛺
-      </span>
-    ),
+    icon: <Tent size={32} weight="duotone" color="#ca8a04" />,
   },
   {
     key: '4-day-wellness-retreat',
     label: '4-Day Wellness Retreat',
     description:
       'A short break at a spa resort or wellness center offering yoga, meditation, and spa treatments.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Spa">
-        💆
-      </span>
-    ),
+    icon: <PersonSimpleTaiChi size={32} weight="duotone" color="#ec4899" />,
   },
   {
     key: '7-day-backpacking-expedition',
     label: '7-Day Backpacking Expedition',
     description:
       'A self-guided trek with hostel stays and local homestays, focusing on experiential travel through communities and nature.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Backpack">
-        🎒
-      </span>
-    ),
+    icon: <Backpack size={32} weight="duotone" color="#84cc16" />,
   },
   {
     key: '7-day-cruise-vacation',
     label: '7-Day Cruise Vacation',
     description:
       'A week-long cruise covering multiple ports, combining leisure, entertainment, and shore excursions.',
-    icon: (
-      <span className="text-2xl" role="img" aria-label="Cruise">
-        🚢
-      </span>
-    ),
+    icon: <Sailboat size={32} weight="duotone" color="#0284c7" />,
   },
 ];
 
@@ -206,6 +178,67 @@ const TemplatesPage: FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
             {templates.map((tpl) => {
               const isSelected = selected === tpl.key;
+              let bgColor = 'bg-white';
+              let hoverBgColor = 'hover:bg-gray-50';
+              let iconBgColor = 'bg-blue-100';
+              
+              // Set colors based on template type
+              switch(tpl.key) {
+                case '2-day-city-break':
+                  iconBgColor = 'bg-indigo-100';
+                  if (isSelected) bgColor = 'bg-indigo-50';
+                  hoverBgColor = 'hover:bg-indigo-50';
+                  break;
+                case '3-day-weekend-road-trip':
+                  iconBgColor = 'bg-orange-100';
+                  if (isSelected) bgColor = 'bg-orange-50';
+                  hoverBgColor = 'hover:bg-orange-50';
+                  break;
+                case '7-day-beach-vacation':
+                  iconBgColor = 'bg-sky-100';
+                  if (isSelected) bgColor = 'bg-sky-50';
+                  hoverBgColor = 'hover:bg-sky-50';
+                  break;
+                case '3-day-hiking-adventure':
+                  iconBgColor = 'bg-green-100';
+                  if (isSelected) bgColor = 'bg-green-50';
+                  hoverBgColor = 'hover:bg-green-50';
+                  break;
+                case '2-day-business-trip':
+                  iconBgColor = 'bg-gray-100';
+                  if (isSelected) bgColor = 'bg-gray-50';
+                  hoverBgColor = 'hover:bg-gray-50';
+                  break;
+                case '5-day-cultural-tour':
+                  iconBgColor = 'bg-purple-100';
+                  if (isSelected) bgColor = 'bg-purple-50';
+                  hoverBgColor = 'hover:bg-purple-50';
+                  break;
+                case '2-day-camping-getaway':
+                  iconBgColor = 'bg-amber-100';
+                  if (isSelected) bgColor = 'bg-amber-50';
+                  hoverBgColor = 'hover:bg-amber-50';
+                  break;
+                case '4-day-wellness-retreat':
+                  iconBgColor = 'bg-pink-100';
+                  if (isSelected) bgColor = 'bg-pink-50';
+                  hoverBgColor = 'hover:bg-pink-50';
+                  break;
+                case '7-day-backpacking-expedition':
+                  iconBgColor = 'bg-lime-100';
+                  if (isSelected) bgColor = 'bg-lime-50';
+                  hoverBgColor = 'hover:bg-lime-50';
+                  break;
+                case '7-day-cruise-vacation':
+                  iconBgColor = 'bg-blue-100';
+                  if (isSelected) bgColor = 'bg-blue-50';
+                  hoverBgColor = 'hover:bg-blue-50';
+                  break;
+                default:
+                  if (isSelected) bgColor = 'bg-blue-50';
+                  break;
+              }
+              
               return (
                 <Card
                   key={tpl.key}
@@ -218,14 +251,14 @@ const TemplatesPage: FC = () => {
                     handleTemplateSelect(tpl);
                   }}
                   onKeyDown={(e) => handleKeyDown(e, tpl.key, tpl)}
-                  className={`bg-white border transition cursor-pointer outline-none
-                    ${isSelected ? 'border-blue-600 ring-2 ring-blue-200 bg-blue-50' : 'border-gray-200'}
-                    hover:shadow-lg hover:border-blue-400 focus:ring-2 focus:ring-blue-300
+                  className={`${bgColor} border transition cursor-pointer outline-none
+                    ${isSelected ? 'border-blue-600 ring-2 ring-blue-200' : 'border-gray-200'}
+                    ${hoverBgColor} hover:shadow-lg hover:border-blue-400 focus:ring-2 focus:ring-blue-300
                   `}
                 >
                   <CardContent className="flex flex-col items-start gap-4 p-6">
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-100 text-blue-600 rounded-full p-3 w-12 h-12 flex items-center justify-center">
+                      <div className={`${iconBgColor} rounded-full p-3 w-12 h-12 flex items-center justify-center`}>
                         {tpl.icon}
                       </div>
                       <div>

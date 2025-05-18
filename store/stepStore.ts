@@ -12,6 +12,8 @@ export interface QuestionnaireAnswers {
   activities: string[];
   specialNeeds: string;
   customActivity: string;
+  luggageType: string[];
+  luggageWeight: string;
 }
 
 export interface StepStoreState {
@@ -30,6 +32,8 @@ const initialAnswers: QuestionnaireAnswers = {
   activities: [],
   specialNeeds: '',
   customActivity: '',
+  luggageType: [],
+  luggageWeight: '',
 };
 
 /**
