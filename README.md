@@ -20,6 +20,27 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Environment Setup
+
+The application uses environment variables for certain functionality:
+
+1. Create a `.env.local` file in the root directory of the project
+2. Add the following variables:
+
+```
+# Google Maps API Key for Places API (securely stored on server-side)
+GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+```
+
+To obtain a Google Maps API key:
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the "Places API" and "Maps JavaScript API"
+4. Create an API key in the "Credentials" section
+5. Copy the API key to your `.env.local` file
+
+Note: This implementation uses a server-side API route to proxy Google Places API requests, keeping your API key secure and never exposing it to the client.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

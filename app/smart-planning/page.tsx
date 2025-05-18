@@ -1,5 +1,6 @@
 'use client';
 import type { FC } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { useStepStore } from '@/store/stepStore';
@@ -32,6 +33,7 @@ import {
   Question,
   Compass,
 } from '@phosphor-icons/react';
+import PlacesAutocomplete from './_components/PlacesAutocomplete';
 
 /**
  * Smart Planning Questionnaire page with split layout matching onboarding.
@@ -86,8 +88,8 @@ const SmartPlanningPage: FC = () => {
   };
 
   // Handlers for input changes
-  const handleDestinationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAnswers({ destination: e.target.value });
+  const handleDestinationChange = (value: string) => {
+    setAnswers({ destination: value });
   };
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -312,14 +314,9 @@ const SmartPlanningPage: FC = () => {
               <label className="block text-sm font-medium mb-1" htmlFor="destination">
                 Destination
               </label>
-              <input
-                id="destination"
-                type="text"
-                className="w-full border border-gray-200 rounded-md px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-                placeholder="Enter your destination"
+              <PlacesAutocomplete
                 value={answers.destination}
                 onChange={handleDestinationChange}
-                autoFocus
               />
               <div className="flex gap-4 w-full mb-8">
                 <div className="flex-1">

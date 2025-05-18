@@ -2,6 +2,29 @@
 
 This document tracks all development work on the PackUp project. Each entry should include the date, what was done, and any important notes or decisions. The most recent entries are at the top.
 
+## 2024-05-19: Google Places Autocomplete Integration
+
+### Implemented Features
+
+- Added Google Places Autocomplete to the Smart Planning location question
+- Created a reusable `GooglePlacesAutocomplete` component
+- Integrated with the Google Maps API for place suggestions and selection
+- Added support for both formatted addresses and place names
+- Updated documentation with Google Maps API key setup instructions
+
+### Technical Notes
+
+- Added `@react-google-maps/api` package to handle the Google Maps JavaScript API loading
+- Created an environment variable `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` for API key configuration
+- Set up the autocomplete to focus on cities to improve user experience
+- Maintained accessibility and responsive design in the implementation
+
+### Next Steps
+
+- Consider extending Places Autocomplete to other location inputs in the app
+- Add visual feedback during location selection process
+- Explore using additional Google Places data (coordinates, timezone, etc.) for trip planning
+
 ## 2024-05-18: Onboarding UI & Interactivity
 
 ### Implemented Features
