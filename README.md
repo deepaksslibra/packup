@@ -33,6 +33,7 @@ GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
 ```
 
 To obtain a Google Maps API key:
+
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select an existing one
 3. Enable the "Places API" and "Maps JavaScript API"

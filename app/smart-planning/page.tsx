@@ -314,10 +314,7 @@ const SmartPlanningPage: FC = () => {
               <label className="block text-sm font-medium mb-1" htmlFor="destination">
                 Destination
               </label>
-              <PlacesAutocomplete
-                value={answers.destination}
-                onChange={handleDestinationChange}
-              />
+              <PlacesAutocomplete value={answers.destination} onChange={handleDestinationChange} />
               <div className="flex gap-4 w-full mb-8">
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1" htmlFor="date-start">

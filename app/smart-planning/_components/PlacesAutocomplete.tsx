@@ -48,7 +48,7 @@ export default function PlacesAutocomplete({
           `/api/places?input=${encodeURIComponent(debouncedInputValue)}`
         );
         const data = await response.json();
-        
+
         if (data.predictions) {
           setSuggestions(data.predictions);
         }
@@ -68,7 +68,7 @@ export default function PlacesAutocomplete({
       setInputValue(description);
       onChange(description);
       setShowSuggestions(false);
-      
+
       // Fetch additional place details if needed
       const response = await fetch('/api/places', {
         method: 'POST',
@@ -77,9 +77,9 @@ export default function PlacesAutocomplete({
         },
         body: JSON.stringify({ placeId }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.result && data.result.formatted_address) {
         setInputValue(data.result.formatted_address);
         onChange(data.result.formatted_address);
@@ -96,7 +96,7 @@ export default function PlacesAutocomplete({
         setShowSuggestions(false);
       }
     }
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -107,7 +107,10 @@ export default function PlacesAutocomplete({
     <div className="relative w-full" ref={wrapperRef}>
       <input
         type="text"
-        className={className || "w-full border border-gray-200 rounded-md px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-primary bg-white"}
+        className={
+          className ||
+          'w-full border border-gray-200 rounded-md px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-primary bg-white'
+        }
         placeholder="Enter your destination"
         value={inputValue}
         onChange={(e) => {
@@ -117,7 +120,7 @@ export default function PlacesAutocomplete({
         onFocus={() => setShowSuggestions(true)}
         autoFocus
       />
-      
+
       {showSuggestions && suggestions.length > 0 && (
         <ul className="absolute z-10 w-full bg-white shadow-lg rounded-md mt-1 max-h-60 overflow-auto">
           {suggestions.map((suggestion) => (
@@ -127,17 +130,19 @@ export default function PlacesAutocomplete({
               onClick={() => handleSelectPlace(suggestion.place_id, suggestion.description)}
             >
               <div className="font-medium">{suggestion.structured_formatting.main_text}</div>
-              <div className="text-sm text-gray-500">{suggestion.structured_formatting.secondary_text}</div>
+              <div className="text-sm text-gray-500">
+                {suggestion.structured_formatting.secondary_text}
+              </div>
             </li>
           ))}
         </ul>
       )}
-      
+
       {isLoading && (
         <div className="absolute right-3 top-3">
-          <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent"></div>
+          <div className="animate-spin h-4 w-4 border-2 border-blue-500 rounded-full border-t-transparent" />
         </div>
       )}
     </div>
   );
-} 
+}
