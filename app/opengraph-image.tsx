@@ -46,24 +46,9 @@ export default async function Image() {
               stroke="white"
               strokeWidth="2"
             />
-            <path
-              d="M7 8H12H17"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M7 12H17"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M7 16H14"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
+            <path d="M7 8H12H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <path d="M7 12H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <path d="M7 16H14" stroke="white" strokeWidth="2" strokeLinecap="round" />
           </svg>
           <h1
             style={{
@@ -113,7 +98,8 @@ export default async function Image() {
             maxWidth: '900px',
           }}
         >
-          Save time, pack smarter, and travel stress-free with tailored recommendations for every journey.
+          Save time, pack smarter, and travel stress-free with tailored recommendations for every
+          journey.
         </p>
       </div>
     ),
@@ -139,4 +125,4 @@ export default async function Image() {
       ],
     }
   );
-} 
+}

@@ -3,7 +3,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'PackUp - Smart Travel Packing Lists',
-  description: 'PackUp helps you create perfect AI-powered packing lists for any trip. Never forget essential items again.',
+  description:
+    'PackUp helps you create perfect AI-powered packing lists for any trip. Never forget essential items again.',
   generator: 'Next.js',
   applicationName: 'PackUp',
   keywords: ['travel', 'packing', 'trips', 'smart packing', 'travel planning', 'packing list'],
@@ -11,12 +12,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://packup.travel'),
   openGraph: {
     title: 'PackUp - Never Forget Essential Travel Items Again',
-    description: 'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
+    description:
+      'Create AI-powered packing lists customized for your destination, trip length, and activities. Travel smarter with PackUp.',
     url: 'https://packup.travel',
     siteName: 'PackUp',
     images: [
       {
-        url: '/og.png', 
+        url: '/og.png',
         width: 1200,
         height: 630,
         alt: 'PackUp - Smart Travel Packing Lists',
