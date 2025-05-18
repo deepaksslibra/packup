@@ -83,7 +83,9 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
         <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4 pt-2 md:pt-4">
           <div className="grid grid-cols-[1fr_auto] gap-3 md:gap-4">
             <div className="space-y-1.5 md:space-y-2">
-              <Label htmlFor="name" className="text-sm md:text-base">Item Name</Label>
+              <Label htmlFor="name" className="text-sm md:text-base">
+                Item Name
+              </Label>
               <Input
                 id="name"
                 value={name}
@@ -100,7 +102,9 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
           </div>
 
           <div className="space-y-1.5 md:space-y-2">
-            <Label htmlFor="category" className="text-sm md:text-base">Category</Label>
+            <Label htmlFor="category" className="text-sm md:text-base">
+              Category
+            </Label>
             <Input
               id="category"
               list="categories"
@@ -120,7 +124,9 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
           </div>
 
           <div className="space-y-1.5 md:space-y-2">
-            <Label htmlFor="quantity" className="text-sm md:text-base">Quantity</Label>
+            <Label htmlFor="quantity" className="text-sm md:text-base">
+              Quantity
+            </Label>
             <Input
               id="quantity"
               type="number"
@@ -147,10 +153,18 @@ export function AddItemDialog({ isOpen, onClose, tripId, defaultCategory }: AddI
           </div>
 
           <DialogFooter className="pt-2 md:pt-4 flex-col-reverse sm:flex-row gap-2 sm:gap-0">
-            <Button type="button" variant="outline" onClick={onClose} className="w-full sm:w-auto text-sm md:text-base h-9 md:h-10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="w-full sm:w-auto text-sm md:text-base h-9 md:h-10"
+            >
               Cancel
             </Button>
-            <Button type="submit" className="bg-blue-500 hover:bg-blue-600 w-full sm:w-auto text-sm md:text-base h-9 md:h-10">
+            <Button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 w-full sm:w-auto text-sm md:text-base h-9 md:h-10"
+            >
               Add Item
             </Button>
           </DialogFooter>

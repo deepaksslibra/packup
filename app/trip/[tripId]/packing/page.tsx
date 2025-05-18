@@ -288,14 +288,21 @@ export default function TripPackingPage() {
       <div className="border-b border-gray-200 mb-4 md:mb-6 px-3 md:px-6 py-3 md:py-4">
         <div className="flex justify-between items-center max-w-[100%] md:max-w-[95%] mx-auto">
           <div className="flex items-center gap-1 md:gap-2">
-            <Button variant="ghost" size="icon" className="h-8 w-8 md:h-10 md:w-10" onClick={() => router.push('/trips')}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 md:h-10 md:w-10"
+              onClick={() => router.push('/trips')}
+            >
               <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
             </Button>
-            <h1 className="text-base md:text-xl font-semibold font-serif truncate max-w-[180px] md:max-w-none">{trip.name}</h1>
+            <h1 className="text-base md:text-xl font-semibold font-serif truncate max-w-[180px] md:max-w-none">
+              {trip.name}
+            </h1>
           </div>
           <div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="flex items-center gap-1 md:gap-2 text-xs md:text-sm h-8 md:h-9 px-2 md:px-3"
               onClick={generatePDF}
             >
@@ -328,9 +335,9 @@ export default function TripPackingPage() {
             variant="ghost"
             onClick={() => setActiveFilter('all')}
             className={cn(
-              "text-xs md:text-sm rounded-none h-10 flex-1 border-0",
-              activeFilter === 'all' 
-                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+              'text-xs md:text-sm rounded-none h-10 flex-1 border-0',
+              activeFilter === 'all'
+                ? 'bg-blue-600 hover:bg-blue-600 text-white'
                 : 'bg-white hover:bg-gray-50'
             )}
           >
@@ -340,9 +347,9 @@ export default function TripPackingPage() {
             variant="ghost"
             onClick={() => setActiveFilter('essential')}
             className={cn(
-              "text-xs md:text-sm rounded-none h-10 flex-1 border-x border-gray-200",
-              activeFilter === 'essential' 
-                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+              'text-xs md:text-sm rounded-none h-10 flex-1 border-x border-gray-200',
+              activeFilter === 'essential'
+                ? 'bg-blue-600 hover:bg-blue-600 text-white'
                 : 'bg-white hover:bg-gray-50'
             )}
           >
@@ -352,9 +359,9 @@ export default function TripPackingPage() {
             variant="ghost"
             onClick={() => setActiveFilter('remaining')}
             className={cn(
-              "text-xs md:text-sm rounded-none h-10 flex-1 border-0",
-              activeFilter === 'remaining' 
-                ? 'bg-blue-600 hover:bg-blue-600 text-white' 
+              'text-xs md:text-sm rounded-none h-10 flex-1 border-0',
+              activeFilter === 'remaining'
+                ? 'bg-blue-600 hover:bg-blue-600 text-white'
                 : 'bg-white hover:bg-gray-50'
             )}
           >
@@ -367,7 +374,10 @@ export default function TripPackingPage() {
           {Object.entries(groupedItems).map(([category, items]) => (
             <div key={category} className="space-y-2 md:space-y-3">
               <h3 className="text-base md:text-lg font-medium flex items-center gap-1.5 md:gap-2 text-blue-600">
-                <IconRenderer icon={getCategoryIcon(category)} className="size-4 md:size-5 text-blue-600" />
+                <IconRenderer
+                  icon={getCategoryIcon(category)}
+                  className="size-4 md:size-5 text-blue-600"
+                />
                 {category}
               </h3>
               <div>
@@ -391,7 +401,10 @@ export default function TripPackingPage() {
                           item.packed ? 'line-through text-gray-400' : 'text-gray-800'
                         )}
                       >
-                        <IconRenderer icon={getItemIcon(item)} className="size-4 md:size-4 text-gray-600 mr-2" />
+                        <IconRenderer
+                          icon={getItemIcon(item)}
+                          className="size-4 md:size-4 text-gray-600 mr-2"
+                        />
                         <span>
                           {item.name} {item.quantity > 1 ? `(${item.quantity})` : ''}
                         </span>

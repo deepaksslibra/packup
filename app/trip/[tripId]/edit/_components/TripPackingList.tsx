@@ -148,7 +148,10 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
   return (
     <div className="space-y-6 md:space-y-8">
       {Object.entries(itemsByCategory).map(([category, items]) => (
-        <div key={category} className="rounded-lg overflow-hidden bg-white shadow-sm border border-gray-100">
+        <div
+          key={category}
+          className="rounded-lg overflow-hidden bg-white shadow-sm border border-gray-100"
+        >
           <div
             className="flex items-center justify-between p-3 md:p-4 border-b relative"
             onMouseEnter={() => setHoveredCategory(category)}
@@ -161,7 +164,9 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
               <h2 className="text-base md:text-lg font-medium">{category}</h2>
             </div>
             {/* Always show category actions on mobile, but hover on desktop */}
-            <div className={`flex items-center space-x-2 ${hoveredCategory === category ? 'md:flex' : 'flex md:hidden'}`}>
+            <div
+              className={`flex items-center space-x-2 ${hoveredCategory === category ? 'md:flex' : 'flex md:hidden'}`}
+            >
               <button
                 className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
                 onClick={() => handleEditCategory(category)}
@@ -207,7 +212,9 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                   <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
                     <span className="text-xs md:text-sm font-medium">{item.name}</span>
                     {item.quantity > 1 && (
-                      <span className="text-[10px] md:text-xs text-gray-500">({item.quantity})</span>
+                      <span className="text-[10px] md:text-xs text-gray-500">
+                        ({item.quantity})
+                      </span>
                     )}
                     {item.essential && (
                       <span className="text-[10px] md:text-xs bg-amber-50 text-amber-600 px-1.5 md:px-2 py-0.5 rounded-full border border-amber-200">
@@ -234,7 +241,9 @@ export function TripPackingList({ tripId }: TripPackingListProps) {
                   </div>
                 </div>
                 {/* Always show item actions on mobile, but hover on desktop */}
-                <div className={`flex space-x-1 ml-1 ${hoveredItem === item.id ? 'md:flex' : 'flex md:hidden'}`}>
+                <div
+                  className={`flex space-x-1 ml-1 ${hoveredItem === item.id ? 'md:flex' : 'flex md:hidden'}`}
+                >
                   <button
                     className="p-1 rounded-md hover:bg-gray-200 text-gray-500 cursor-pointer"
                     onClick={() => handleEditItem(item.id)}

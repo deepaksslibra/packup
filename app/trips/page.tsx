@@ -166,7 +166,9 @@ export default function TripsPage() {
                 <CardHeader className="pb-0 pt-2 px-3 md:px-4">
                   <div className="flex justify-between items-start">
                     <div className="w-[85%]">
-                      <CardTitle className="text-base md:text-lg break-words">{trip.name}</CardTitle>
+                      <CardTitle className="text-base md:text-lg break-words">
+                        {trip.name}
+                      </CardTitle>
                       {trip.startDate && trip.endDate && (
                         <p className="text-xs text-gray-500">
                           {formatDateRange(trip.startDate, trip.endDate)}
@@ -242,15 +244,15 @@ export default function TripsPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 flex-col sm:flex-row gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={cancelDeleteTrip}
               className="text-xs md:text-sm h-8 md:h-9"
             >
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={confirmDeleteTrip}
               className="text-xs md:text-sm h-8 md:h-9"
             >

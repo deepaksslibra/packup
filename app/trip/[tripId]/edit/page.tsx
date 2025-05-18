@@ -235,7 +235,9 @@ export default function TripEditPage() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <h1 className="text-lg md:text-xl font-semibold font-serif truncate">{trip.name}</h1>
+                <h1 className="text-lg md:text-xl font-semibold font-serif truncate">
+                  {trip.name}
+                </h1>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -397,7 +399,9 @@ export default function TripEditPage() {
                       <Sun className="h-4 w-4 md:h-5 md:w-5 text-amber-500 mt-0.5 flex-shrink-0" />
                       <div>
                         <div className="flex items-center flex-wrap gap-1.5 md:gap-2">
-                          <span className="font-medium text-sm md:text-base">{trip.weather.temperature}</span>
+                          <span className="font-medium text-sm md:text-base">
+                            {trip.weather.temperature}
+                          </span>
                           <div className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-amber-600 border border-amber-200 bg-amber-50">
                             {trip.weather.condition}
                           </div>
@@ -414,7 +418,9 @@ export default function TripEditPage() {
                             </div>
                           ))}
                         </div>
-                        <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">{trip.weather.forecast}</p>
+                        <p className="text-gray-600 text-xs md:text-sm mt-0.5 md:mt-1">
+                          {trip.weather.forecast}
+                        </p>
                       </div>
                     </div>
                   )}
